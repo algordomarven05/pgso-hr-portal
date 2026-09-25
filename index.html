@@ -11,7 +11,7 @@
   <!-- FontAwesome for Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   
-  <!-- Google Fonts: Inter -->
+  <!-- Google Fonts: Inter & Cinzel -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
@@ -65,7 +65,6 @@
       }
     }
 
-    /* Custom scrollbar */
     ::-webkit-scrollbar {
       width: 5px;
       height: 5px;
@@ -86,665 +85,701 @@
 <body class="h-full font-sans text-slate-800 dark:text-slate-100 bg-slate-100 dark:bg-slate-900 antialiased transition-colors duration-200">
 
   <!-- TOP ACTION BAR / NAVBAR (NO-PRINT) -->
-  <header class="no-print bg-pgso-blue text-white sticky top-0 z-50 shadow-md border-b border-pgso-gold/30">
+  <header class="no-print bg-pgso-blue text-white sticky top-0 z-40 shadow-md border-b border-pgso-gold/30">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-wrap items-center justify-between gap-3">
       <div class="flex items-center space-x-3">
         <div class="bg-pgso-gold text-pgso-blue p-1.5 rounded-lg font-bold flex items-center justify-center h-9 w-9 shadow">
           <i class="fa-solid fa-id-card text-lg"></i>
         </div>
         <div>
-          <h1 class="font-bold text-base leading-tight tracking-wide">PGSO Records Portal</h1>
+          <h1 class="font-bold text-base leading-tight tracking-wide">PGSO HR Portal & Analytics</h1>
           <p class="text-[11px] text-slate-300">Provincial Government of Northern Samar</p>
         </div>
       </div>
 
-      <!-- Quick Search & Actions -->
       <div class="flex items-center space-x-2 sm:space-x-3">
-        <!-- Dark Mode Toggle -->
         <button id="themeToggle" onclick="toggleTheme()" class="p-2 text-slate-300 hover:text-white hover:bg-slate-800/60 rounded-lg transition" title="Toggle Theme">
           <i id="themeIcon" class="fa-solid fa-moon text-base"></i>
         </button>
 
-        <!-- Export/Print Buttons -->
-        <button onclick="window.print()" class="flex items-center space-x-1.5 bg-pgso-navy hover:bg-slate-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium shadow border border-slate-600 transition">
-          <i class="fa-solid fa-print text-pgso-gold"></i>
-          <span class="hidden sm:inline">Print Record</span>
-        </button>
-
-        <button onclick="exportRecord()" class="flex items-center space-x-1.5 bg-pgso-gold hover:bg-yellow-500 text-pgso-blue px-3 py-1.5 rounded-lg text-xs font-bold shadow transition">
-          <i class="fa-solid fa-file-pdf"></i>
-          <span class="hidden sm:inline">Export Summary</span>
+        <button onclick="openAddEmployeeModal()" class="flex items-center space-x-1.5 bg-pgso-accent hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow transition">
+          <i class="fa-solid fa-user-plus"></i>
+          <span>Add New Employee Entry</span>
         </button>
       </div>
     </div>
   </header>
 
-  <main class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-4 print-container">
+  <main class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-6 space-y-6 print-container">
 
-    <!-- SEARCH, FILTER & MODE TABS (NO-PRINT) -->
-    <div class="no-print bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-3 mb-4 transition-all">
-      <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
-        <!-- Search Input -->
-        <div class="md:col-span-5 relative">
-          <label for="employeeSearch" class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-0.5">Search Personnel</label>
-          <div class="relative">
+    <!-- ================= SECTION 1: AUTOMATED EMPLOYMENT & PLACEMENT STATUS MATRIX ================= -->
+    <section class="no-print bg-white dark:bg-slate-800 rounded-xl shadow-md border border-slate-200 dark:border-slate-700 p-4 sm:p-6 transition-all">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 border-b border-slate-200 dark:border-slate-700 pb-3">
+        <div>
+          <h2 class="text-base sm:text-lg font-extrabold uppercase text-pgso-navy dark:text-pgso-gold flex items-center gap-2">
+            <i class="fa-solid fa-chart-pie text-pgso-accent"></i> Employment & Placement Monitoring Matrix
+          </h2>
+          <p class="text-xs text-slate-500 dark:text-slate-400">Automated real-time personnel tallies calculated dynamically from active records.</p>
+        </div>
+        <span class="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300 text-xs font-bold px-3 py-1 rounded-full w-fit">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Dynamic Auto-Sync
+        </span>
+      </div>
+
+      <!-- MATRIX TABLE -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs text-left text-slate-700 dark:text-slate-200 border-collapse">
+          <thead>
+            <tr class="bg-pgso-blue text-white uppercase text-[11px] font-bold tracking-wider">
+              <th scope="col" class="py-3 px-4 rounded-tl-lg">Placement / Assignment Category</th>
+              <th scope="col" class="py-3 px-3 text-center bg-blue-900/50">Permanent (P)</th>
+              <th scope="col" class="py-3 px-3 text-center bg-blue-900/50">Co-Terminus (CO)</th>
+              <th scope="col" class="py-3 px-3 text-center bg-blue-900/50">Casual (CA)</th>
+              <th scope="col" class="py-3 px-3 text-center bg-blue-900/50">Job Order (JO)</th>
+              <th scope="col" class="py-3 px-4 text-center bg-pgso-navy rounded-tr-lg text-pgso-gold font-extrabold">Horizontal Total</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200 dark:divide-slate-700 font-medium">
+            <!-- Row 1: Office-Based -->
+            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+              <td class="py-3 px-4 font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <i class="fa-solid fa-building text-pgso-navy dark:text-pgso-gold"></i> Office-Based Count
+              </td>
+              <td id="m-ob-p" class="py-3 px-3 text-center font-semibold text-slate-800 dark:text-slate-200">0</td>
+              <td id="m-ob-co" class="py-3 px-3 text-center font-semibold text-slate-800 dark:text-slate-200">0</td>
+              <td id="m-ob-ca" class="py-3 px-3 text-center font-semibold text-slate-800 dark:text-slate-200">0</td>
+              <td id="m-ob-jo" class="py-3 px-3 text-center font-semibold text-slate-800 dark:text-slate-200">0</td>
+              <td id="m-ob-tot" class="py-3 px-4 text-center font-bold text-pgso-navy dark:text-pgso-gold bg-slate-50 dark:bg-slate-800/80">0</td>
+            </tr>
+
+            <!-- Row 2: Detailed (Outgoing) -->
+            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+              <td class="py-3 px-4 font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <i class="fa-solid fa-share-from-square text-amber-600"></i> Detailed (Outgoing)
+              </td>
+              <td id="m-det-p" class="py-3 px-3 text-center font-semibold text-slate-800 dark:text-slate-200">0</td>
+              <td id="m-det-co" class="py-3 px-3 text-center font-semibold text-slate-800 dark:text-slate-200">0</td>
+              <td id="m-det-ca" class="py-3 px-3 text-center font-semibold text-slate-800 dark:text-slate-200">0</td>
+              <td id="m-det-jo" class="py-3 px-3 text-center font-semibold text-slate-800 dark:text-slate-200">0</td>
+              <td id="m-det-tot" class="py-3 px-4 text-center font-bold text-pgso-navy dark:text-pgso-gold bg-slate-50 dark:bg-slate-800/80">0</td>
+            </tr>
+
+            <!-- Row 3: Detailed from Other Office (Incoming) -->
+            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+              <td class="py-3 px-4 font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <i class="fa-solid fa-right-to-bracket text-emerald-600"></i> Detailed from Other Offices
+              </td>
+              <td id="m-dfo-p" class="py-3 px-3 text-center font-semibold text-slate-800 dark:text-slate-200">0</td>
+              <td id="m-dfo-co" class="py-3 px-3 text-center font-semibold text-slate-800 dark:text-slate-200">0</td>
+              <td id="m-dfo-ca" class="py-3 px-3 text-center font-semibold text-slate-800 dark:text-slate-200">0</td>
+              <td id="m-dfo-jo" class="py-3 px-3 text-center font-semibold text-slate-800 dark:text-slate-200">0</td>
+              <td id="m-dfo-tot" class="py-3 px-4 text-center font-bold text-pgso-navy dark:text-pgso-gold bg-slate-50 dark:bg-slate-800/80">0</td>
+            </tr>
+          </tbody>
+
+          <!-- Vertical Totals -->
+          <tfoot>
+            <tr class="bg-slate-100 dark:bg-slate-900/90 font-extrabold uppercase border-t-2 border-pgso-gold text-slate-900 dark:text-white">
+              <td class="py-3 px-4 text-pgso-navy dark:text-pgso-gold">Vertical Total (Status)</td>
+              <td id="m-v-p" class="py-3 px-3 text-center text-emerald-700 dark:text-emerald-400">0</td>
+              <td id="m-v-co" class="py-3 px-3 text-center text-blue-700 dark:text-blue-400">0</td>
+              <td id="m-v-ca" class="py-3 px-3 text-center text-amber-700 dark:text-amber-400">0</td>
+              <td id="m-v-jo" class="py-3 px-3 text-center text-purple-700 dark:text-purple-400">0</td>
+              <td id="m-overall-total" class="py-3 px-4 text-center text-sm font-black bg-pgso-gold text-pgso-blue rounded-b-lg shadow">0</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+
+    <!-- ================= SECTION 2: EMPLOYEE ROSTER & CATEGORIZATION DIRECTORY ================= -->
+    <section class="no-print bg-white dark:bg-slate-800 rounded-xl shadow-md border border-slate-200 dark:border-slate-700 p-4 sm:p-6">
+      
+      <!-- CONTROLS & SEARCH BAR -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5">
+        <div>
+          <h2 class="text-base sm:text-lg font-bold uppercase text-pgso-blue dark:text-white flex items-center gap-2">
+            <i class="fa-solid fa-users text-pgso-gold"></i> Employee Roster & Categorized Directory
+          </h2>
+          <p class="text-xs text-slate-500 dark:text-slate-400">View, search, edit, or categorize all registered workforce personnel.</p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <!-- Filter by Division -->
+          <select id="filterDivision" onchange="renderEmployeeTable()" class="py-1.5 px-3 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-pgso-navy dark:text-white font-medium">
+            <option value="ALL">All Divisions / Sections</option>
+            <option value="Asset & Property Management Division">Asset & Property Management Division</option>
+            <option value="Procurement & General Supply Division">Procurement & General Supply Division</option>
+            <option value="Archives & Records Management Division">Archives & Records Management Division</option>
+            <option value="General Services & Maintenance Division">General Services & Maintenance Division</option>
+          </select>
+
+          <!-- Filter by Assignment Type -->
+          <select id="filterPlacement" onchange="renderEmployeeTable()" class="py-1.5 px-3 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-pgso-navy dark:text-white font-medium">
+            <option value="ALL">All Placement Types</option>
+            <option value="Office-Based">Office-Based</option>
+            <option value="Detailed">Detailed (Outgoing)</option>
+            <option value="Detailed from Other Office">Detailed from Other Office</option>
+          </select>
+
+          <!-- Search Input -->
+          <div class="relative w-full sm:w-64">
             <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400">
               <i class="fa-solid fa-magnifying-glass text-xs"></i>
             </span>
-            <input type="text" id="employeeSearch" onkeyup="filterEmployees()" placeholder="Type ID, Name, or Division..." class="w-full pl-8 pr-8 py-1.5 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-pgso-navy focus:border-pgso-navy dark:text-white transition" />
-            <button id="clearSearch" onclick="clearSearchInput()" class="hidden absolute inset-y-0 right-0 pr-2.5 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
-              <i class="fa-solid fa-circle-xmark text-xs"></i>
-            </button>
-          </div>
-          <!-- Auto-suggest dropdown -->
-          <div id="suggestBox" class="hidden absolute left-0 right-0 top-full mt-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-xl z-30 max-h-60 overflow-y-auto"></div>
-        </div>
-
-        <!-- Employee Select Dropdown -->
-        <div class="md:col-span-4">
-          <label for="employeeSelect" class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-0.5">Select Profile</label>
-          <select id="employeeSelect" onchange="loadSelectedEmployee()" class="w-full py-1.5 px-2.5 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-pgso-navy focus:border-pgso-navy dark:text-white font-medium">
-            <!-- Dynamic Options -->
-          </select>
-        </div>
-
-        <!-- View / Edit / Raw Data Mode Selector -->
-        <div class="md:col-span-3 flex justify-end pt-3 md:pt-0">
-          <div class="inline-flex rounded-lg p-0.5 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 w-full">
-            <button id="btnTabView" onclick="switchTab('view')" class="flex-1 py-1 px-2.5 text-xs font-bold rounded-md bg-white dark:bg-slate-800 text-pgso-navy dark:text-pgso-gold shadow-sm transition flex items-center justify-center gap-1">
-              <i class="fa-solid fa-eye"></i> View
-            </button>
-            <button id="btnTabEdit" onclick="switchTab('edit')" class="flex-1 py-1 px-2.5 text-xs font-medium rounded-md text-slate-600 dark:text-slate-400 hover:text-slate-900 transition flex items-center justify-center gap-1">
-              <i class="fa-solid fa-pen-to-square"></i> Edit
-            </button>
-            <button id="btnTabRaw" onclick="switchTab('raw')" class="flex-1 py-1 px-2.5 text-xs font-medium rounded-md text-slate-600 dark:text-slate-400 hover:text-slate-900 transition flex items-center justify-center gap-1">
-              <i class="fa-solid fa-code"></i> Raw Data
-            </button>
+            <input type="text" id="rosterSearch" onkeyup="renderEmployeeTable()" placeholder="Search Name, ID, or Title..." class="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-pgso-navy dark:text-white" />
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- ================= VIEW MODE SECTION ================= -->
-    <div id="viewSection" class="bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 p-4 sm:p-8 transition-colors print-shadow-none">
+      <!-- ROSTER TABLE -->
+      <div class="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-700">
+        <table class="w-full text-xs text-left text-slate-700 dark:text-slate-200">
+          <thead class="bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 uppercase font-bold text-[10px] tracking-wider border-b border-slate-200 dark:border-slate-700">
+            <tr>
+              <th class="py-3 px-4">Employee Name / ID</th>
+              <th class="py-3 px-3">Designation / Division</th>
+              <th class="py-3 px-3 text-center">Employment Status</th>
+              <th class="py-3 px-3 text-center">Placement</th>
+              <th class="py-3 px-3 text-center">Basic Salary</th>
+              <th class="py-3 px-4 text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="employeeRosterBody" class="divide-y divide-slate-200 dark:divide-slate-700 font-medium">
+            <!-- Dynamic Injection -->
+          </tbody>
+        </table>
+      </div>
+    </section>
 
-      <!-- ================= HEADER SECTION ================= -->
-      <header class="border-b-2 border-pgso-blue dark:border-pgso-gold pb-4 mb-5">
-        <div class="grid grid-cols-12 items-center gap-2">
-          
-          <!-- Left Logo: Provincial Capitol -->
-          <div class="col-span-3 sm:col-span-2 flex justify-center sm:justify-start">
-            <div class="w-16 h-16 sm:w-22 sm:h-22 rounded-full border-2 border-pgso-gold/60 p-1 flex items-center justify-center bg-slate-50 dark:bg-slate-900 shadow-sm">
-              <svg viewBox="0 0 100 100" class="w-full h-full">
-                <circle cx="50" cy="50" r="46" fill="#0B2545" stroke="#D4AF37" stroke-width="3"/>
-                <circle cx="50" cy="50" r="38" fill="none" stroke="#FFFFFF" stroke-dasharray="2,2"/>
-                <path d="M50 15 L60 35 L80 35 L64 48 L70 68 L50 55 L30 68 L36 48 L20 35 L40 35 Z" fill="#EEA243" opacity="0.85"/>
-                <circle cx="50" cy="50" r="18" fill="#006B38" />
-                <text x="50" y="53" font-family="Cinzel, serif" font-size="10" font-weight="bold" fill="#FFFFFF" text-anchor="middle">N. SAMAR</text>
-              </svg>
-            </div>
-          </div>
+    <!-- ================= SECTION 3: INDIVIDUAL PERSONNEL VIEW / PRINT PLATFORM (MODAL/PANEL) ================= -->
+    <div id="viewSection" class="hidden bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 p-4 sm:p-8 transition-colors print-shadow-none">
 
-          <!-- Center Header Text -->
-          <div class="col-span-6 sm:col-span-8 text-center space-y-0.5">
-            <p class="text-xs sm:text-sm font-semibold tracking-wide uppercase text-slate-700 dark:text-slate-300">Province of Northern Samar</p>
-            <p class="text-[11px] sm:text-xs font-medium text-slate-600 dark:text-slate-400">Catarman</p>
-            <p class="text-[10px] text-slate-400 font-serif tracking-widest my-0">-oOo-</p>
-            <p class="text-[11px] sm:text-xs italic font-bold uppercase tracking-wider text-pgso-navy dark:text-pgso-gold">
-              NORTEHANON: MARIG-ON, MAINUSWAGON, MALIPAYON
-            </p>
-            <h2 class="text-sm sm:text-lg font-extrabold uppercase tracking-wide text-pgso-blue dark:text-white">
-              PROVINCIAL GENERAL SERVICES OFFICE
-            </h2>
-          </div>
-
-          <!-- Right Logo: PGSO Office Logo -->
-          <div class="col-span-3 sm:col-span-2 flex justify-center sm:justify-end">
-            <div class="w-16 h-16 sm:w-22 sm:h-22 rounded-full border-2 border-pgso-gold/60 p-1 flex items-center justify-center bg-slate-50 dark:bg-slate-900 shadow-sm">
-              <svg viewBox="0 0 100 100" class="w-full h-full">
-                <circle cx="50" cy="50" r="46" fill="#006B38" stroke="#D4AF37" stroke-width="3"/>
-                <polygon points="50,18 80,38 80,75 50,90 20,75 20,38" fill="none" stroke="#FFFFFF" stroke-width="2"/>
-                <path d="M35 45 L50 35 L65 45 L65 65 L50 72 L35 65 Z" fill="#D4AF37"/>
-                <text x="50" y="55" font-family="Inter, sans-serif" font-size="12" font-weight="900" fill="#0B2545" text-anchor="middle">PGSO</text>
-              </svg>
-            </div>
-          </div>
-
+      <!-- HEADER BAR FOR VIEW PLATFORM -->
+      <div class="no-print flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-3 mb-6">
+        <span class="text-xs font-bold uppercase tracking-wider text-pgso-navy dark:text-pgso-gold flex items-center gap-1.5">
+          <i class="fa-solid fa-eye text-pgso-accent"></i> Official Employee Record Viewer Platform
+        </span>
+        <div class="flex items-center gap-2">
+          <button onclick="window.print()" class="bg-pgso-navy hover:bg-slate-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium shadow transition flex items-center gap-1.5">
+            <i class="fa-solid fa-print text-pgso-gold"></i> Print Sheet
+          </button>
+          <button onclick="closeEmployeeView()" class="bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-slate-300 transition">
+            <i class="fa-solid fa-xmark"></i> Close Platform
+          </button>
         </div>
+      </div>
 
-        <div class="mt-2 text-center border-t border-dashed border-slate-300 dark:border-slate-700 pt-2">
-          <span class="inline-block px-3 py-0.5 rounded-full text-[10px] font-bold tracking-widest bg-pgso-blue/10 dark:bg-pgso-gold/20 text-pgso-blue dark:text-pgso-gold uppercase">
-            Official Personnel Data Sheet
-          </span>
-        </div>
-      </header>
-
-      <!-- ================= SECTION 1: EMPLOYEE MAIN PERSONAL INFO ================= -->
-      <section class="mb-5 page-break-inside-avoid">
-        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-1.5 mb-3">
-          <h3 class="text-sm font-bold text-pgso-blue dark:text-pgso-gold uppercase flex items-center gap-1.5">
-            <i class="fa-solid fa-user-gear text-pgso-accent text-xs"></i> 1. Personal Information
-          </h3>
-          <span id="badgeStatus" class="px-2.5 py-0.5 text-[10px] font-bold rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300 uppercase">
-            Active
-          </span>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
-          
-          <!-- Column A: ID Photo Card + Vertically Piled Info (Tight Space Layout) -->
-          <div class="md:col-span-5 flex flex-col space-y-2 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-200 dark:border-slate-700">
+      <!-- PRINTABLE SHEET CONTAINER -->
+      <div id="printablePersonnelSheet">
+        <header class="border-b-2 border-pgso-blue dark:border-pgso-gold pb-4 mb-5">
+          <div class="grid grid-cols-12 items-center gap-2">
             
-            <!-- Photo Box -->
-            <div class="flex items-center justify-center mb-1">
-              <div class="relative group">
-                <img id="empPhoto" src="https://placehold.co/160x160/134074/FFFFFF?text=Photo" alt="Employee Headshot" class="w-28 h-28 object-cover rounded-xl shadow border-2 border-pgso-gold" />
-                <div class="absolute bottom-1 right-1 bg-pgso-blue text-white text-[9px] px-1.5 py-0.5 rounded font-mono shadow">
-                  ID: <span id="empIdBadge">---</span>
-                </div>
+            <div class="col-span-3 sm:col-span-2 flex justify-center sm:justify-start">
+              <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-pgso-gold/60 p-1 flex items-center justify-center bg-slate-50 dark:bg-slate-900 shadow-sm">
+                <svg viewBox="0 0 100 100" class="w-full h-full">
+                  <circle cx="50" cy="50" r="46" fill="#0B2545" stroke="#D4AF37" stroke-width="3"/>
+                  <circle cx="50" cy="50" r="38" fill="none" stroke="#FFFFFF" stroke-dasharray="2,2"/>
+                  <path d="M50 15 L60 35 L80 35 L64 48 L70 68 L50 55 L30 68 L36 48 L20 35 L40 35 Z" fill="#EEA243" opacity="0.85"/>
+                  <circle cx="50" cy="50" r="18" fill="#006B38" />
+                  <text x="50" y="53" font-family="Cinzel, serif" font-size="10" font-weight="bold" fill="#FFFFFF" text-anchor="middle">N. SAMAR</text>
+                </svg>
               </div>
             </div>
 
-            <!-- PILED VERTICAL LAYOUT (Compact Row Stack) -->
-            <div class="space-y-1.5 font-sans divide-y divide-slate-200/60 dark:divide-slate-700/60 text-xs">
+            <div class="col-span-6 sm:col-span-8 text-center space-y-0.5">
+              <p class="text-xs sm:text-sm font-semibold tracking-wide uppercase text-slate-700 dark:text-slate-300">Province of Northern Samar</p>
+              <p class="text-[11px] sm:text-xs font-medium text-slate-600 dark:text-slate-400">Catarman</p>
+              <p class="text-[10px] text-slate-400 font-serif tracking-widest my-0">-oOo-</p>
+              <p class="text-[11px] sm:text-xs italic font-bold uppercase tracking-wider text-pgso-navy dark:text-pgso-gold">
+                NORTEHANON: MARIG-ON, MAINUSWAGON, MALIPAYON
+              </p>
+              <h2 class="text-sm sm:text-lg font-extrabold uppercase tracking-wide text-pgso-blue dark:text-white">
+                PROVINCIAL GENERAL SERVICES OFFICE
+              </h2>
+            </div>
+
+            <div class="col-span-3 sm:col-span-2 flex justify-center sm:justify-end">
+              <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-pgso-gold/60 p-1 flex items-center justify-center bg-slate-50 dark:bg-slate-900 shadow-sm">
+                <svg viewBox="0 0 100 100" class="w-full h-full">
+                  <circle cx="50" cy="50" r="46" fill="#006B38" stroke="#D4AF37" stroke-width="3"/>
+                  <polygon points="50,18 80,38 80,75 50,90 20,75 20,38" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+                  <path d="M35 45 L50 35 L65 45 L65 65 L50 72 L35 65 Z" fill="#D4AF37"/>
+                  <text x="50" y="55" font-family="Inter, sans-serif" font-size="12" font-weight="900" fill="#0B2545" text-anchor="middle">PGSO</text>
+                </svg>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="mt-2 text-center border-t border-dashed border-slate-300 dark:border-slate-700 pt-2">
+            <span class="inline-block px-3 py-0.5 rounded-full text-[10px] font-bold tracking-widest bg-pgso-blue/10 dark:bg-pgso-gold/20 text-pgso-blue dark:text-pgso-gold uppercase">
+              Official Personnel Data Sheet
+            </span>
+          </div>
+        </header>
+
+        <!-- SECTION 1: PERSONAL INFO -->
+        <section class="mb-5 page-break-inside-avoid">
+          <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-1.5 mb-3">
+            <h3 class="text-sm font-bold text-pgso-blue dark:text-pgso-gold uppercase flex items-center gap-1.5">
+              <i class="fa-solid fa-user-gear text-pgso-accent text-xs"></i> 1. Personal Information
+            </h3>
+            <span id="badgeStatus" class="px-2.5 py-0.5 text-[10px] font-bold rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300 uppercase">
+              Active
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+            
+            <div class="md:col-span-5 flex flex-col space-y-2 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-200 dark:border-slate-700">
               
-              <!-- 1. Last Name -->
-              <div class="pt-0.5 flex justify-between items-baseline">
-                <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Last Name</span>
-                <span id="empLastName" class="text-xs font-extrabold text-slate-900 dark:text-white uppercase">---</span>
+              <div class="flex items-center justify-center mb-1">
+                <div class="relative group">
+                  <img id="empPhoto" src="https://placehold.co/160x160/134074/FFFFFF?text=Photo" alt="Employee Headshot" class="w-28 h-28 object-cover rounded-xl shadow border-2 border-pgso-gold" />
+                  <div class="absolute bottom-1 right-1 bg-pgso-blue text-white text-[9px] px-1.5 py-0.5 rounded font-mono shadow">
+                    ID: <span id="empIdBadge">---</span>
+                  </div>
+                </div>
               </div>
 
-              <!-- 2. First Name -->
-              <div class="pt-1 flex justify-between items-baseline">
-                <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">First Name</span>
-                <span id="empFirstName" class="text-xs font-extrabold text-slate-900 dark:text-white uppercase">---</span>
-              </div>
-
-              <!-- 3. Middle Name -->
-              <div class="pt-1 flex justify-between items-baseline">
-                <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Middle Name</span>
-                <span id="empMiddleName" class="text-xs font-semibold text-slate-800 dark:text-slate-200 uppercase">---</span>
-              </div>
-
-              <!-- 4. Name Extension -->
-              <div class="pt-1 flex justify-between items-baseline">
-                <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Name Ext.</span>
-                <span id="empNameExtension" class="text-xs font-semibold text-slate-800 dark:text-slate-200">N/A</span>
-              </div>
-
-              <!-- 5. Contact Number -->
-              <div class="pt-1 flex justify-between items-baseline">
-                <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Contact No.</span>
-                <span id="empContact" class="text-xs font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1">
-                  <i class="fa-solid fa-phone text-[10px] text-pgso-accent"></i> <span>---</span>
-                </span>
-              </div>
-
-              <!-- 6. Email Address -->
-              <div class="pt-1 flex justify-between items-baseline">
-                <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Email</span>
-                <span id="empEmail" class="text-xs font-semibold text-slate-800 dark:text-slate-200 break-all flex items-center gap-1">
-                  <i class="fa-solid fa-envelope text-[10px] text-pgso-accent"></i> <span>---</span>
-                </span>
-              </div>
-
-              <!-- 7. Current Address -->
-              <div class="pt-1 flex justify-between items-baseline">
-                <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Address</span>
-                <span id="empAddress" class="text-xs font-semibold text-slate-800 dark:text-slate-200 leading-snug text-right flex items-start gap-1">
-                  <i class="fa-solid fa-location-dot text-[10px] text-pgso-accent mt-0.5"></i> <span>---</span>
-                </span>
-              </div>
-
-            </div>
-          </div>
-
-          <!-- Column B: Adjacent Personal Details Column & Emergency Contact -->
-          <div class="md:col-span-7 flex flex-col justify-between space-y-3">
-            
-            <!-- Other Personal Details Matrix -->
-            <div class="bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
-              <h4 class="text-[11px] font-extrabold uppercase text-pgso-navy dark:text-pgso-gold tracking-wider mb-2 border-b border-slate-100 dark:border-slate-700 pb-1">
-                Biographical Particulars
-              </h4>
-              <div class="grid grid-cols-2 sm:grid-cols-3 gap-y-2 gap-x-2 text-xs">
-                <div>
-                  <span class="block text-[10px] text-slate-500 dark:text-slate-400">Gender</span>
-                  <span id="empGender" class="font-semibold text-slate-800 dark:text-slate-200">---</span>
+              <div class="space-y-1.5 font-sans divide-y divide-slate-200/60 dark:divide-slate-700/60 text-xs">
+                
+                <div class="pt-0.5 flex justify-between items-baseline">
+                  <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Last Name</span>
+                  <span id="empLastName" class="text-xs font-extrabold text-slate-900 dark:text-white uppercase">---</span>
                 </div>
-                <div>
-                  <span class="block text-[10px] text-slate-500 dark:text-slate-400">Civil Status</span>
-                  <span id="empMaritalStatus" class="font-semibold text-slate-800 dark:text-slate-200">---</span>
+
+                <div class="pt-1 flex justify-between items-baseline">
+                  <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">First Name</span>
+                  <span id="empFirstName" class="text-xs font-extrabold text-slate-900 dark:text-white uppercase">---</span>
                 </div>
-                <div>
-                  <span class="block text-[10px] text-slate-500 dark:text-slate-400">Date of Birth</span>
-                  <span id="empDob" class="font-semibold text-slate-800 dark:text-slate-200">---</span>
+
+                <div class="pt-1 flex justify-between items-baseline">
+                  <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Middle Name</span>
+                  <span id="empMiddleName" class="text-xs font-semibold text-slate-800 dark:text-slate-200 uppercase">---</span>
                 </div>
-                <div>
-                  <span class="block text-[10px] text-slate-500 dark:text-slate-400">Age</span>
-                  <span id="empAge" class="font-semibold text-slate-800 dark:text-slate-200">---</span>
+
+                <div class="pt-1 flex justify-between items-baseline">
+                  <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Name Ext.</span>
+                  <span id="empNameExtension" class="text-xs font-semibold text-slate-800 dark:text-slate-200">N/A</span>
                 </div>
-                <div>
-                  <span class="block text-[10px] text-slate-500 dark:text-slate-400">Nationality</span>
-                  <span id="empNationality" class="font-semibold text-slate-800 dark:text-slate-200">---</span>
+
+                <div class="pt-1 flex justify-between items-baseline">
+                  <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Contact No.</span>
+                  <span id="empContact" class="text-xs font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1">
+                    <i class="fa-solid fa-phone text-[10px] text-pgso-accent"></i> <span>---</span>
+                  </span>
                 </div>
-                <div>
-                  <span class="block text-[10px] text-slate-500 dark:text-slate-400">Religion</span>
-                  <span id="empReligion" class="font-semibold text-slate-800 dark:text-slate-200">---</span>
+
+                <div class="pt-1 flex justify-between items-baseline">
+                  <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Email</span>
+                  <span id="empEmail" class="text-xs font-semibold text-slate-800 dark:text-slate-200 break-all flex items-center gap-1">
+                    <i class="fa-solid fa-envelope text-[10px] text-pgso-accent"></i> <span>---</span>
+                  </span>
                 </div>
-                <div class="col-span-2 sm:col-span-3 pt-1 border-t border-slate-100 dark:border-slate-700">
-                  <span class="block text-[10px] text-slate-500 dark:text-slate-400">Place of Birth</span>
-                  <span id="empPob" class="font-semibold text-slate-800 dark:text-slate-200">---</span>
+
+                <div class="pt-1 flex justify-between items-baseline">
+                  <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Address</span>
+                  <span id="empAddress" class="text-xs font-semibold text-slate-800 dark:text-slate-200 leading-snug text-right flex items-start gap-1">
+                    <i class="fa-solid fa-location-dot text-[10px] text-pgso-accent mt-0.5"></i> <span>---</span>
+                  </span>
                 </div>
+
               </div>
             </div>
 
-            <!-- Emergency Contact Details Block -->
-            <div class="bg-amber-50/60 dark:bg-slate-800 p-3 rounded-xl border border-amber-200/80 dark:border-amber-900/40 shadow-sm">
-              <h4 class="text-[11px] font-extrabold uppercase text-amber-900 dark:text-amber-400 tracking-wider mb-2 flex items-center gap-1.5">
-                <i class="fa-solid fa-truck-medical text-xs"></i> Emergency Contact Information
-              </h4>
-              <div class="grid grid-cols-2 gap-2 text-xs">
-                <div>
-                  <span class="block text-[10px] text-slate-500 dark:text-slate-400">Contact Person</span>
-                  <span id="emgName" class="font-bold text-slate-800 dark:text-slate-200">---</span>
+            <div class="md:col-span-7 flex flex-col justify-between space-y-3">
+              <div class="bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                <h4 class="text-[11px] font-extrabold uppercase text-pgso-navy dark:text-pgso-gold tracking-wider mb-2 border-b border-slate-100 dark:border-slate-700 pb-1">
+                  Biographical Particulars
+                </h4>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-y-2 gap-x-2 text-xs">
+                  <div>
+                    <span class="block text-[10px] text-slate-500 dark:text-slate-400">Gender</span>
+                    <span id="empGender" class="font-semibold text-slate-800 dark:text-slate-200">---</span>
+                  </div>
+                  <div>
+                    <span class="block text-[10px] text-slate-500 dark:text-slate-400">Civil Status</span>
+                    <span id="empMaritalStatus" class="font-semibold text-slate-800 dark:text-slate-200">---</span>
+                  </div>
+                  <div>
+                    <span class="block text-[10px] text-slate-500 dark:text-slate-400">Date of Birth</span>
+                    <span id="empDob" class="font-semibold text-slate-800 dark:text-slate-200">---</span>
+                  </div>
+                  <div>
+                    <span class="block text-[10px] text-slate-500 dark:text-slate-400">Age</span>
+                    <span id="empAge" class="font-semibold text-slate-800 dark:text-slate-200">---</span>
+                  </div>
+                  <div>
+                    <span class="block text-[10px] text-slate-500 dark:text-slate-400">Nationality</span>
+                    <span id="empNationality" class="font-semibold text-slate-800 dark:text-slate-200">---</span>
+                  </div>
+                  <div>
+                    <span class="block text-[10px] text-slate-500 dark:text-slate-400">Religion</span>
+                    <span id="empReligion" class="font-semibold text-slate-800 dark:text-slate-200">---</span>
+                  </div>
+                  <div class="col-span-2 sm:col-span-3 pt-1 border-t border-slate-100 dark:border-slate-700">
+                    <span class="block text-[10px] text-slate-500 dark:text-slate-400">Place of Birth</span>
+                    <span id="empPob" class="font-semibold text-slate-800 dark:text-slate-200">---</span>
+                  </div>
                 </div>
-                <div>
-                  <span class="block text-[10px] text-slate-500 dark:text-slate-400">Relationship</span>
-                  <span id="emgRel" class="font-semibold text-slate-800 dark:text-slate-200">---</span>
-                </div>
-                <div>
-                  <span class="block text-[10px] text-slate-500 dark:text-slate-400">Emergency Phone</span>
-                  <span id="emgContact" class="font-semibold text-slate-800 dark:text-slate-200">---</span>
-                </div>
-                <div>
-                  <span class="block text-[10px] text-slate-500 dark:text-slate-400">Emergency Address</span>
-                  <span id="emgAddress" class="font-semibold text-slate-800 dark:text-slate-200 truncate block">---</span>
+              </div>
+
+              <div class="bg-amber-50/60 dark:bg-slate-800 p-3 rounded-xl border border-amber-200/80 dark:border-amber-900/40 shadow-sm">
+                <h4 class="text-[11px] font-extrabold uppercase text-amber-900 dark:text-amber-400 tracking-wider mb-2 flex items-center gap-1.5">
+                  <i class="fa-solid fa-truck-medical text-xs"></i> Emergency Contact Information
+                </h4>
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                  <div>
+                    <span class="block text-[10px] text-slate-500 dark:text-slate-400">Contact Person</span>
+                    <span id="emgName" class="font-bold text-slate-800 dark:text-slate-200">---</span>
+                  </div>
+                  <div>
+                    <span class="block text-[10px] text-slate-500 dark:text-slate-400">Relationship</span>
+                    <span id="emgRel" class="font-semibold text-slate-800 dark:text-slate-200">---</span>
+                  </div>
+                  <div>
+                    <span class="block text-[10px] text-slate-500 dark:text-slate-400">Emergency Phone</span>
+                    <span id="emgContact" class="font-semibold text-slate-800 dark:text-slate-200">---</span>
+                  </div>
+                  <div>
+                    <span class="block text-[10px] text-slate-500 dark:text-slate-400">Emergency Address</span>
+                    <span id="emgAddress" class="font-semibold text-slate-800 dark:text-slate-200 truncate block">---</span>
+                  </div>
                 </div>
               </div>
             </div>
-
           </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- ================= SECTION 2: EMPLOYMENT DETAILS ================= -->
-      <section class="mb-5 page-break-inside-avoid">
-        <div class="border-b border-slate-200 dark:border-slate-700 pb-1 mb-2.5">
-          <h3 class="text-sm font-bold text-pgso-blue dark:text-pgso-gold uppercase flex items-center gap-1.5">
-            <i class="fa-solid fa-briefcase text-pgso-navy dark:text-pgso-gold text-xs"></i> 2. Employment & Position Details
-          </h3>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 dark:bg-slate-800/40 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-xs">
-          <!-- Left Column -->
-          <div class="space-y-1.5">
-            <div class="flex justify-between border-b border-slate-200 dark:border-slate-700 pb-1">
-              <span class="text-slate-500 dark:text-slate-400">Job Title / Designation:</span>
-              <span id="empJobTitle" class="font-bold text-slate-900 dark:text-white text-right">---</span>
-            </div>
-            <div class="flex justify-between border-b border-slate-200 dark:border-slate-700 pb-1">
-              <span class="text-slate-500 dark:text-slate-400">Employment Status:</span>
-              <span id="empEmploymentStatus" class="font-semibold text-slate-800 dark:text-slate-200">---</span>
-            </div>
-            <div class="flex justify-between border-b border-slate-200 dark:border-slate-700 pb-1">
-              <span class="text-slate-500 dark:text-slate-400">Date Hired / Entry:</span>
-              <span id="empDateHired" class="font-semibold text-slate-800 dark:text-slate-200">---</span>
-            </div>
-            <div class="flex justify-between border-b border-slate-200 dark:border-slate-700 pb-1">
-              <span class="text-slate-500 dark:text-slate-400">Division / Section:</span>
-              <span id="empDivision" class="font-semibold text-slate-800 dark:text-slate-200 text-right">---</span>
-            </div>
-            <div class="flex justify-between border-b border-slate-200 dark:border-slate-700 pb-1">
-              <span class="text-slate-500 dark:text-slate-400">Department:</span>
-              <span id="empDepartment" class="font-semibold text-slate-800 dark:text-slate-200">PGSO</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-slate-500 dark:text-slate-400">Job Level / Salary Grade:</span>
-              <span id="empJobLevel" class="font-semibold text-slate-800 dark:text-slate-200">---</span>
-            </div>
+        <!-- SECTION 2: EMPLOYMENT DETAILS -->
+        <section class="mb-5 page-break-inside-avoid">
+          <div class="border-b border-slate-200 dark:border-slate-700 pb-1 mb-2.5">
+            <h3 class="text-sm font-bold text-pgso-blue dark:text-pgso-gold uppercase flex items-center gap-1.5">
+              <i class="fa-solid fa-briefcase text-pgso-navy dark:text-pgso-gold text-xs"></i> 2. Employment & Position Details
+            </h3>
           </div>
 
-          <!-- Right Column -->
-          <div class="space-y-1.5">
-            <div class="flex justify-between border-b border-slate-200 dark:border-slate-700 pb-1">
-              <span class="text-slate-500 dark:text-slate-400">Immediate Superior:</span>
-              <span id="empSuperior" class="font-semibold text-slate-800 dark:text-slate-200 text-right">---</span>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 dark:bg-slate-800/40 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-xs">
+            <div class="space-y-1.5">
+              <div class="flex justify-between border-b border-slate-200 dark:border-slate-700 pb-1">
+                <span class="text-slate-500 dark:text-slate-400">Job Title / Designation:</span>
+                <span id="empJobTitle" class="font-bold text-slate-900 dark:text-white text-right">---</span>
+              </div>
+              <div class="flex justify-between border-b border-slate-200 dark:border-slate-700 pb-1">
+                <span class="text-slate-500 dark:text-slate-400">Employment Status:</span>
+                <span id="empEmploymentStatus" class="font-semibold text-slate-800 dark:text-slate-200">---</span>
+              </div>
+              <div class="flex justify-between border-b border-slate-200 dark:border-slate-700 pb-1">
+                <span class="text-slate-500 dark:text-slate-400">Placement Category:</span>
+                <span id="empPlacementType" class="font-semibold text-pgso-navy dark:text-pgso-gold">---</span>
+              </div>
+              <div class="flex justify-between border-b border-slate-200 dark:border-slate-700 pb-1">
+                <span class="text-slate-500 dark:text-slate-400">Date Hired / Entry:</span>
+                <span id="empDateHired" class="font-semibold text-slate-800 dark:text-slate-200">---</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-500 dark:text-slate-400">Division / Section:</span>
+                <span id="empDivision" class="font-semibold text-slate-800 dark:text-slate-200 text-right">---</span>
+              </div>
             </div>
-            <div class="flex justify-between border-b border-slate-200 dark:border-slate-700 pb-1">
-              <span class="text-slate-500 dark:text-slate-400">Regularization Date:</span>
-              <span id="empRegularization" class="font-semibold text-slate-800 dark:text-slate-200">---</span>
-            </div>
-            <div class="flex justify-between border-b border-slate-200 dark:border-slate-700 pb-1">
-              <span class="text-slate-500 dark:text-slate-400">Separation / End Date:</span>
-              <span id="empSeparation" class="font-semibold text-slate-800 dark:text-slate-200">N/A</span>
-            </div>
-            <div class="flex justify-between border-b border-slate-200 dark:border-slate-700 pb-1">
-              <span class="text-slate-500 dark:text-slate-400">Work Location:</span>
-              <span id="empWorkLocation" class="font-semibold text-slate-800 dark:text-slate-200 text-right">Capitol Compound, Catarman</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-slate-500 dark:text-slate-400">Tenure / Service Length:</span>
-              <span id="empTenure" class="font-semibold text-pgso-accent">---</span>
+
+            <div class="space-y-1.5">
+              <div class="flex justify-between border-b border-slate-200 dark:border-slate-700 pb-1">
+                <span class="text-slate-500 dark:text-slate-400">Department:</span>
+                <span id="empDepartment" class="font-semibold text-slate-800 dark:text-slate-200">PGSO</span>
+              </div>
+              <div class="flex justify-between border-b border-slate-200 dark:border-slate-700 pb-1">
+                <span class="text-slate-500 dark:text-slate-400">Job Level / Salary Grade:</span>
+                <span id="empJobLevel" class="font-semibold text-slate-800 dark:text-slate-200">---</span>
+              </div>
+              <div class="flex justify-between border-b border-slate-200 dark:border-slate-700 pb-1">
+                <span class="text-slate-500 dark:text-slate-400">Immediate Superior:</span>
+                <span id="empSuperior" class="font-semibold text-slate-800 dark:text-slate-200 text-right">---</span>
+              </div>
+              <div class="flex justify-between border-b border-slate-200 dark:border-slate-700 pb-1">
+                <span class="text-slate-500 dark:text-slate-400">Work Location:</span>
+                <span id="empWorkLocation" class="font-semibold text-slate-800 dark:text-slate-200 text-right">Capitol Compound, Catarman</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-500 dark:text-slate-400">Tenure / Service Length:</span>
+                <span id="empTenure" class="font-semibold text-pgso-accent">---</span>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- ================= SECTION 3: COMPENSATION & PAYROLL DETAILS ================= -->
-      <section class="mb-5 page-break-inside-avoid">
-        <div class="border-b border-slate-200 dark:border-slate-700 pb-1 mb-2.5">
-          <h3 class="text-sm font-bold text-pgso-blue dark:text-pgso-gold uppercase flex items-center gap-1.5">
-            <i class="fa-solid fa-coins text-pgso-gold text-xs"></i> 3. Compensation & Payroll Accounts
-          </h3>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 dark:bg-slate-800/40 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-xs">
-          <!-- Left Column -->
-          <div class="space-y-1.5">
-            <div class="flex justify-between border-b border-slate-200 dark:border-slate-700 pb-1">
-              <span class="text-slate-500 dark:text-slate-400">Compensation Type:</span>
-              <span id="empSalaryType" class="font-semibold text-slate-800 dark:text-slate-200">---</span>
-            </div>
-            <div class="flex justify-between border-b border-slate-200 dark:border-slate-700 pb-1">
-              <span class="text-slate-500 dark:text-slate-400">Basic Monthly Salary:</span>
-              <span id="empBasicSalary" class="font-bold text-emerald-700 dark:text-emerald-400">---</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-slate-500 dark:text-slate-400">Tax Status / Exemption:</span>
-              <span id="empTaxStatus" class="font-semibold text-slate-800 dark:text-slate-200">---</span>
-            </div>
+        <!-- SECTION 3: COMPENSATION -->
+        <section class="mb-5 page-break-inside-avoid">
+          <div class="border-b border-slate-200 dark:border-slate-700 pb-1 mb-2.5">
+            <h3 class="text-sm font-bold text-pgso-blue dark:text-pgso-gold uppercase flex items-center gap-1.5">
+              <i class="fa-solid fa-coins text-pgso-gold text-xs"></i> 3. Compensation & Payroll Accounts
+            </h3>
           </div>
 
-          <!-- Right Column -->
-          <div class="space-y-1.5">
-            <div class="flex justify-between border-b border-slate-200 dark:border-slate-700 pb-1">
-              <span class="text-slate-500 dark:text-slate-400">Payroll Bank Name:</span>
-              <span id="empBankName" class="font-semibold text-slate-800 dark:text-slate-200 text-right">---</span>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 dark:bg-slate-800/40 p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-xs">
+            <div class="space-y-1.5">
+              <div class="flex justify-between border-b border-slate-200 dark:border-slate-700 pb-1">
+                <span class="text-slate-500 dark:text-slate-400">Compensation Type:</span>
+                <span id="empSalaryType" class="font-semibold text-slate-800 dark:text-slate-200">---</span>
+              </div>
+              <div class="flex justify-between border-b border-slate-200 dark:border-slate-700 pb-1">
+                <span class="text-slate-500 dark:text-slate-400">Basic Monthly Salary:</span>
+                <span id="empBasicSalary" class="font-bold text-emerald-700 dark:text-emerald-400">---</span>
+              </div>
             </div>
-            <div class="flex justify-between border-b border-slate-200 dark:border-slate-700 pb-1">
-              <span class="text-slate-500 dark:text-slate-400">Bank Account Number:</span>
-              <span id="empBankAccount" class="font-mono font-bold text-slate-900 dark:text-slate-100">---</span>
-            </div>
-            <div class="flex justify-between border-b border-slate-200 dark:border-slate-700 pb-1">
-              <span class="text-slate-500 dark:text-slate-400">Account Status:</span>
-              <span id="empBankStatus" class="font-semibold text-emerald-600 dark:text-emerald-400">Active / Verified</span>
+
+            <div class="space-y-1.5">
+              <div class="flex justify-between border-b border-slate-200 dark:border-slate-700 pb-1">
+                <span class="text-slate-500 dark:text-slate-400">Payroll Bank Name:</span>
+                <span id="empBankName" class="font-semibold text-slate-800 dark:text-slate-200 text-right">---</span>
+              </div>
+              <div class="flex justify-between border-b border-slate-200 dark:border-slate-700 pb-1">
+                <span class="text-slate-500 dark:text-slate-400">Bank Account Number:</span>
+                <span id="empBankAccount" class="font-mono font-bold text-slate-900 dark:text-slate-100">---</span>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- ================= SECTION 4: GOVERNMENT BENEFITS ================= -->
-      <section class="mb-4 page-break-inside-avoid">
-        <div class="border-b border-slate-200 dark:border-slate-700 pb-1 mb-2.5">
-          <h3 class="text-sm font-bold text-pgso-blue dark:text-pgso-gold uppercase flex items-center gap-1.5">
-            <i class="fa-solid fa-id-card-clip text-pgso-navy dark:text-pgso-gold text-xs"></i> 4. Government Statutory Benefits & IDs
-          </h3>
-        </div>
-
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-          
-          <!-- SSS -->
-          <div class="bg-slate-50 dark:bg-slate-800/80 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center space-x-2">
-            <div class="w-8 h-8 rounded bg-blue-100 text-blue-800 flex items-center justify-center font-bold text-[10px] shrink-0">
-              SSS
-            </div>
-            <div class="min-w-0">
-              <span class="block text-[9px] text-slate-500 dark:text-slate-400 uppercase font-semibold">Social Security</span>
-              <span id="empSss" class="font-mono font-bold text-xs text-slate-800 dark:text-slate-200 truncate block">---</span>
-            </div>
+        <!-- SECTION 4: BENEFITS -->
+        <section class="mb-4 page-break-inside-avoid">
+          <div class="border-b border-slate-200 dark:border-slate-700 pb-1 mb-2.5">
+            <h3 class="text-sm font-bold text-pgso-blue dark:text-pgso-gold uppercase flex items-center gap-1.5">
+              <i class="fa-solid fa-id-card-clip text-pgso-navy dark:text-pgso-gold text-xs"></i> 4. Government Statutory Benefits & IDs
+            </h3>
           </div>
 
-          <!-- PhilHealth -->
-          <div class="bg-slate-50 dark:bg-slate-800/80 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center space-x-2">
-            <div class="w-8 h-8 rounded bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-[10px] shrink-0">
-              PHIC
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            <div class="bg-slate-50 dark:bg-slate-800/80 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center space-x-2">
+              <div class="w-8 h-8 rounded bg-blue-100 text-blue-800 flex items-center justify-center font-bold text-[10px] shrink-0">SSS</div>
+              <div class="min-w-0">
+                <span class="block text-[9px] text-slate-500 dark:text-slate-400 uppercase font-semibold">Social Security</span>
+                <span id="empSss" class="font-mono font-bold text-xs text-slate-800 dark:text-slate-200 truncate block">---</span>
+              </div>
             </div>
-            <div class="min-w-0">
-              <span class="block text-[9px] text-slate-500 dark:text-slate-400 uppercase font-semibold">PhilHealth</span>
-              <span id="empPhilhealth" class="font-mono font-bold text-xs text-slate-800 dark:text-slate-200 truncate block">---</span>
+
+            <div class="bg-slate-50 dark:bg-slate-800/80 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center space-x-2">
+              <div class="w-8 h-8 rounded bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-[10px] shrink-0">PHIC</div>
+              <div class="min-w-0">
+                <span class="block text-[9px] text-slate-500 dark:text-slate-400 uppercase font-semibold">PhilHealth</span>
+                <span id="empPhilhealth" class="font-mono font-bold text-xs text-slate-800 dark:text-slate-200 truncate block">---</span>
+              </div>
+            </div>
+
+            <div class="bg-slate-50 dark:bg-slate-800/80 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center space-x-2">
+              <div class="w-8 h-8 rounded bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-[10px] shrink-0">HDMF</div>
+              <div class="min-w-0">
+                <span class="block text-[9px] text-slate-500 dark:text-slate-400 uppercase font-semibold">Pag-IBIG</span>
+                <span id="empPagibig" class="font-mono font-bold text-xs text-slate-800 dark:text-slate-200 truncate block">---</span>
+              </div>
+            </div>
+
+            <div class="bg-slate-50 dark:bg-slate-800/80 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center space-x-2">
+              <div class="w-8 h-8 rounded bg-purple-100 text-purple-800 flex items-center justify-center font-bold text-[10px] shrink-0">TIN</div>
+              <div class="min-w-0">
+                <span class="block text-[9px] text-slate-500 dark:text-slate-400 uppercase font-semibold">Tax Identification</span>
+                <span id="empTin" class="font-mono font-bold text-xs text-slate-800 dark:text-slate-200 truncate block">---</span>
+              </div>
             </div>
           </div>
+        </section>
 
-          <!-- Pag-IBIG -->
-          <div class="bg-slate-50 dark:bg-slate-800/80 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center space-x-2">
-            <div class="w-8 h-8 rounded bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-[10px] shrink-0">
-              HDMF
+        <!-- FOOTER -->
+        <footer class="mt-8 pt-4 border-t border-slate-200 dark:border-slate-700 text-[11px] text-slate-500 dark:text-slate-400">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 items-end">
+            <div>
+              <p class="italic leading-snug">I hereby certify that the information provided herein is true, correct, and updated based on official records on file with the PGSO Northern Samar.</p>
+              <p class="mt-2 font-mono text-[9px]">Hash ID: PGSO-HRD-<span id="docStamp">2026-89A7</span> | System Generated</p>
             </div>
-            <div class="min-w-0">
-              <span class="block text-[9px] text-slate-500 dark:text-slate-400 uppercase font-semibold">Pag-IBIG</span>
-              <span id="empPagibig" class="font-mono font-bold text-xs text-slate-800 dark:text-slate-200 truncate block">---</span>
-            </div>
-          </div>
-
-          <!-- TIN -->
-          <div class="bg-slate-50 dark:bg-slate-800/80 p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center space-x-2">
-            <div class="w-8 h-8 rounded bg-purple-100 text-purple-800 flex items-center justify-center font-bold text-[10px] shrink-0">
-              TIN
-            </div>
-            <div class="min-w-0">
-              <span class="block text-[9px] text-slate-500 dark:text-slate-400 uppercase font-semibold">Tax Identification</span>
-              <span id="empTin" class="font-mono font-bold text-xs text-slate-800 dark:text-slate-200 truncate block">---</span>
+            <div class="text-center sm:text-right">
+              <div class="inline-block border-b border-slate-800 dark:border-slate-200 w-44 mb-1"></div>
+              <p class="font-bold text-slate-800 dark:text-slate-200 uppercase text-xs">PGSO HR Division Head</p>
+              <p class="text-[10px]">Provincial Capitol, Catarman, Northern Samar</p>
             </div>
           </div>
-
-        </div>
-      </section>
-
-      <!-- OFFICIAL CERTIFICATION / FOOTER (PRINT FRIENDLY) -->
-      <footer class="mt-8 pt-4 border-t border-slate-200 dark:border-slate-700 text-[11px] text-slate-500 dark:text-slate-400">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 items-end">
-          <div>
-            <p class="italic leading-snug">I hereby certify that the information provided herein is true, correct, and updated based on official records on file with the PGSO Northern Samar.</p>
-            <p class="mt-2 font-mono text-[9px]">Hash ID: PGSO-HRD-<span id="docStamp">2026-89A7</span> | System Generated</p>
-          </div>
-          <div class="text-center sm:text-right">
-            <div class="inline-block border-b border-slate-800 dark:border-slate-200 w-44 mb-1"></div>
-            <p class="font-bold text-slate-800 dark:text-slate-200 uppercase text-xs">PGSO HR Division Head</p>
-            <p class="text-[10px]">Provincial Capitol, Catarman, Northern Samar</p>
-          </div>
-        </div>
-      </footer>
-
+        </footer>
+      </div>
     </div>
 
-    <!-- ================= EDIT MODE FORM SECTION ================= -->
-    <div id="editSection" class="hidden bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 p-4 sm:p-6 transition-colors">
-      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-3 mb-4">
-        <div>
+    <!-- ================= EDIT MODAL ================= -->
+    <div id="editModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+      <div class="bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 max-w-3xl w-full max-h-[90vh] overflow-y-auto p-5">
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-3 mb-4">
           <h3 class="text-base font-bold text-pgso-blue dark:text-pgso-gold uppercase flex items-center gap-2">
-            <i class="fa-solid fa-pen-to-square"></i> Edit Employee Personnel Record
+            <i class="fa-solid fa-pen-to-square"></i> Edit Personnel Information
           </h3>
-          <p class="text-xs text-slate-500 dark:text-slate-400">Update values below to modify this record in live memory.</p>
+          <button onclick="closeEditModal()" class="text-slate-400 hover:text-slate-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
         </div>
-        <button onclick="saveEmployeeEdits()" class="bg-pgso-accent hover:bg-emerald-700 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow flex items-center gap-1.5">
-          <i class="fa-solid fa-floppy-disk"></i> Save Edits
-        </button>
-      </div>
 
-      <form id="editForm" onsubmit="event.preventDefault(); saveEmployeeEdits();" class="space-y-4 text-xs">
-        
-        <!-- Group 1: Core Personal Stack -->
-        <div class="bg-slate-50 dark:bg-slate-900/60 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
-          <h4 class="font-bold text-pgso-navy dark:text-pgso-gold uppercase text-[11px] mb-2">1. Name & Primary Stack</h4>
+        <form id="editForm" onsubmit="event.preventDefault(); saveEmployeeEdits();" class="space-y-4 text-xs">
+          <!-- Categorization & Status Box -->
+          <div class="bg-blue-50 dark:bg-slate-900/80 p-3 rounded-lg border border-blue-200 dark:border-slate-700">
+            <h4 class="font-bold text-pgso-navy dark:text-pgso-gold uppercase text-[11px] mb-2">Category & Employment Status</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Employment Status</label>
+                <select id="editEmploymentStatus" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded font-semibold">
+                  <option value="Permanent / Regular">Permanent (P)</option>
+                  <option value="Co-Terminus">Co-Terminus (CO)</option>
+                  <option value="Casual / Contractual">Casual (CA)</option>
+                  <option value="Job Order">Job Order (JO)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Placement Type</label>
+                <select id="editPlacementType" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded font-semibold">
+                  <option value="Office-Based">Office-Based Count</option>
+                  <option value="Detailed">Detailed (Outgoing)</option>
+                  <option value="Detailed from Other Office">Detailed from Other Office (Incoming)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Names Block -->
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
               <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Last Name</label>
-              <input type="text" id="editLastName" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded font-semibold text-slate-900 dark:text-white" />
+              <input type="text" id="editLastName" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded font-bold" required />
             </div>
             <div>
               <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">First Name</label>
-              <input type="text" id="editFirstName" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded font-semibold text-slate-900 dark:text-white" />
+              <input type="text" id="editFirstName" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded font-bold" required />
             </div>
             <div>
               <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Middle Name</label>
               <input type="text" id="editMiddleName" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded" />
             </div>
             <div>
-              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Name Extension</label>
-              <input type="text" id="editNameExtension" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded" placeholder="Jr., Sr., III" />
-            </div>
-            <div>
-              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Contact Number</label>
-              <input type="text" id="editContact" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded" />
-            </div>
-            <div>
-              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Email Address</label>
-              <input type="email" id="editEmail" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded" />
-            </div>
-            <div class="sm:col-span-3">
-              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Current Address</label>
-              <input type="text" id="editAddress" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded" />
-            </div>
-          </div>
-        </div>
-
-        <!-- Group 2: Biographical Particulars -->
-        <div class="bg-slate-50 dark:bg-slate-900/60 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
-          <h4 class="font-bold text-pgso-navy dark:text-pgso-gold uppercase text-[11px] mb-2">2. Biographical Particulars</h4>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div>
-              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Gender</label>
-              <select id="editGender" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded">
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
+              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Division / Section</label>
+              <select id="editDivision" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded">
+                <option value="Asset & Property Management Division">Asset & Property Management Division</option>
+                <option value="Procurement & General Supply Division">Procurement & General Supply Division</option>
+                <option value="Archives & Records Management Division">Archives & Records Management Division</option>
+                <option value="General Services & Maintenance Division">General Services & Maintenance Division</option>
               </select>
             </div>
-            <div>
-              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Civil Status</label>
-              <input type="text" id="editMaritalStatus" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded" />
-            </div>
-            <div>
-              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Date of Birth</label>
-              <input type="date" id="editDob" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded" />
-            </div>
-            <div>
-              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Age</label>
-              <input type="number" id="editAge" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded" />
-            </div>
-            <div>
-              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Place of Birth</label>
-              <input type="text" id="editPob" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded" />
-            </div>
-            <div>
-              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Nationality</label>
-              <input type="text" id="editNationality" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded" />
-            </div>
-            <div class="sm:col-span-2">
-              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Religion</label>
-              <input type="text" id="editReligion" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded" />
-            </div>
-          </div>
-        </div>
-
-        <!-- Group 3: Emergency Contact -->
-        <div class="bg-amber-50/50 dark:bg-slate-900/60 p-3 rounded-lg border border-amber-200 dark:border-slate-700">
-          <h4 class="font-bold text-amber-900 dark:text-amber-400 uppercase text-[11px] mb-2">3. Emergency Contact</h4>
-          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
-            <div>
-              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Contact Person Name</label>
-              <input type="text" id="editEmgName" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded" />
-            </div>
-            <div>
-              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Relationship</label>
-              <input type="text" id="editEmgRel" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded" />
-            </div>
-            <div>
-              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Emergency Phone</label>
-              <input type="text" id="editEmgContact" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded" />
-            </div>
-            <div>
-              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Emergency Address</label>
-              <input type="text" id="editEmgAddress" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded" />
-            </div>
-          </div>
-        </div>
-
-        <!-- Group 4: Employment & Payroll -->
-        <div class="bg-slate-50 dark:bg-slate-900/60 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
-          <h4 class="font-bold text-pgso-navy dark:text-pgso-gold uppercase text-[11px] mb-2">4. Position & Compensation Details</h4>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div>
               <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Job Title</label>
               <input type="text" id="editJobTitle" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded" />
             </div>
             <div>
-              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Employment Status</label>
-              <input type="text" id="editEmploymentStatus" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded" />
+              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Basic Salary</label>
+              <input type="text" id="editBasicSalary" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded font-bold text-emerald-600" />
+            </div>
+          </div>
+
+          <div class="flex justify-end gap-2 pt-3 border-t border-slate-200 dark:border-slate-700">
+            <button type="button" onclick="closeEditModal()" class="px-4 py-2 bg-slate-200 dark:bg-slate-700 rounded-lg text-xs font-bold">Cancel</button>
+            <button type="submit" class="px-4 py-2 bg-pgso-accent hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow">Save Updates</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ================= ADD NEW EMPLOYEE ENTRY MODAL ================= -->
+    <div id="addModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+      <div class="bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 max-w-3xl w-full max-h-[90vh] overflow-y-auto p-5">
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-3 mb-4">
+          <h3 class="text-base font-bold text-pgso-accent uppercase flex items-center gap-2">
+            <i class="fa-solid fa-user-plus"></i> Add New Employee Entry
+          </h3>
+          <button onclick="closeAddEmployeeModal()" class="text-slate-400 hover:text-slate-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <form id="addEmployeeForm" onsubmit="event.preventDefault(); submitNewEmployee();" class="space-y-4 text-xs">
+          
+          <!-- Category & Status Setup -->
+          <div class="bg-emerald-50 dark:bg-slate-900/80 p-3 rounded-lg border border-emerald-200 dark:border-slate-700">
+            <h4 class="font-bold text-pgso-accent uppercase text-[11px] mb-2">1. Categorization & Placement</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Employment Status</label>
+                <select id="addEmploymentStatus" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded font-semibold">
+                  <option value="Permanent / Regular">Permanent (P)</option>
+                  <option value="Co-Terminus">Co-Terminus (CO)</option>
+                  <option value="Casual / Contractual">Casual (CA)</option>
+                  <option value="Job Order">Job Order (JO)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Placement Category</label>
+                <select id="addPlacementType" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded font-semibold">
+                  <option value="Office-Based">Office-Based Count</option>
+                  <option value="Detailed">Detailed (Outgoing)</option>
+                  <option value="Detailed from Other Office">Detailed from Other Office (Incoming)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Personal Information -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Last Name</label>
+              <input type="text" id="addLastName" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded" required placeholder="e.g. BALITE" />
             </div>
             <div>
-              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Division</label>
-              <input type="text" id="editDivision" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded" />
+              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">First Name</label>
+              <input type="text" id="addFirstName" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded" required placeholder="e.g. JUAN" />
             </div>
             <div>
-              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Job Level / SG</label>
-              <input type="text" id="editJobLevel" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded" />
+              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Middle Name</label>
+              <input type="text" id="addMiddleName" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded" placeholder="e.g. DELA CRUZ" />
+            </div>
+            <div>
+              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Gender</label>
+              <select id="addGender" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Contact Number</label>
+              <input type="text" id="addContact" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded" placeholder="+63 917 000 0000" />
+            </div>
+            <div>
+              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Email Address</label>
+              <input type="email" id="addEmail" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded" placeholder="employee@northernsamar.gov.ph" />
+            </div>
+          </div>
+
+          <!-- Position & Division -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Division / Section</label>
+              <select id="addDivision" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded">
+                <option value="Asset & Property Management Division">Asset & Property Management Division</option>
+                <option value="Procurement & General Supply Division">Procurement & General Supply Division</option>
+                <option value="Archives & Records Management Division">Archives & Records Management Division</option>
+                <option value="General Services & Maintenance Division">General Services & Maintenance Division</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Job Title / Designation</label>
+              <input type="text" id="addJobTitle" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded" required placeholder="e.g. Administrative Aide VI" />
             </div>
             <div>
               <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Basic Monthly Salary</label>
-              <input type="text" id="editBasicSalary" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded font-bold text-emerald-600" />
-            </div>
-            <div>
-              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Bank Name</label>
-              <input type="text" id="editBankName" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded" />
-            </div>
-            <div class="sm:col-span-2">
-              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Bank Account Number</label>
-              <input type="text" id="editAccountNo" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded font-mono" />
+              <input type="text" id="addBasicSalary" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded" placeholder="₱ 20,000.00" />
             </div>
           </div>
-        </div>
 
-        <!-- Group 5: Statutory Benefits -->
-        <div class="bg-slate-50 dark:bg-slate-900/60 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
-          <h4 class="font-bold text-pgso-navy dark:text-pgso-gold uppercase text-[11px] mb-2">5. Government Benefit IDs</h4>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div>
-              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">SSS No.</label>
-              <input type="text" id="editSss" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded font-mono" />
-            </div>
-            <div>
-              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">PhilHealth No.</label>
-              <input type="text" id="editPhilhealth" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded font-mono" />
-            </div>
-            <div>
-              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">Pag-IBIG No.</label>
-              <input type="text" id="editPagibig" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded font-mono" />
-            </div>
-            <div>
-              <label class="block font-medium text-slate-600 dark:text-slate-400 mb-0.5">TIN No.</label>
-              <input type="text" id="editTin" class="w-full p-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded font-mono" />
-            </div>
+          <div class="flex justify-end gap-2 pt-3 border-t border-slate-200 dark:border-slate-700">
+            <button type="button" onclick="closeAddEmployeeModal()" class="px-4 py-2 bg-slate-200 dark:bg-slate-700 rounded-lg text-xs font-bold">Cancel</button>
+            <button type="submit" class="px-4 py-2 bg-pgso-accent hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow">Submit & Add Employee</button>
           </div>
-        </div>
-
-      </form>
-    </div>
-
-    <!-- ================= RAW DATA TAB SECTION ================= -->
-    <div id="rawSection" class="hidden bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 p-4 transition-colors">
-      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-3 mb-3">
-        <div>
-          <h3 class="text-base font-bold text-pgso-blue dark:text-pgso-gold uppercase flex items-center gap-2">
-            <i class="fa-solid fa-code text-pgso-accent"></i> Raw Personnel JSON Database
-          </h3>
-          <p class="text-xs text-slate-500 dark:text-slate-400">View or export the actual underlying JSON record structure for this database.</p>
-        </div>
-        <button onclick="copyRawJson()" class="bg-slate-800 hover:bg-slate-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
-          <i class="fa-solid fa-copy"></i> Copy JSON
-        </button>
-      </div>
-
-      <div class="relative">
-        <pre id="rawJsonContainer" class="bg-slate-900 text-emerald-400 p-4 rounded-lg text-xs font-mono overflow-x-auto max-h-[500px] border border-slate-700 leading-relaxed"></pre>
+        </form>
       </div>
     </div>
 
   </main>
 
   <script>
-    // Sample Employee Dataset
-    const employees = [
+    // INITIAL DATASET
+    let employees = [
       {
         id: "PGSO-2024-001",
         lastName: "DAPULAG",
@@ -761,15 +796,11 @@
         pob: "Catarman, Northern Samar",
         nationality: "Filipino",
         religion: "Roman Catholic",
-        emergency: {
-          name: "Maria Dapulag",
-          contact: "+63 918 987 6543",
-          address: "Brgy. Baybay, Catarman",
-          relationship: "Spouse"
-        },
+        emergency: { name: "Maria Dapulag", contact: "+63 918 987 6543", address: "Brgy. Baybay, Catarman", relationship: "Spouse" },
         jobTitle: "Administrative Officer V",
         status: "Active",
         employmentStatus: "Permanent / Regular",
+        placementType: "Office-Based",
         dateHired: "2016-03-16",
         division: "Asset & Property Management Division",
         department: "Provincial General Services Office (PGSO)",
@@ -805,15 +836,11 @@
         pob: "Bobon, Northern Samar",
         nationality: "Filipino",
         religion: "Roman Catholic",
-        emergency: {
-          name: "Serafin Tayam",
-          contact: "+63 920 333 4455",
-          address: "Brgy. Narra, Bobon",
-          relationship: "Father"
-        },
+        emergency: { name: "Serafin Tayam", contact: "+63 920 333 4455", address: "Brgy. Narra, Bobon", relationship: "Father" },
         jobTitle: "Supply Officer II",
         status: "Active",
         employmentStatus: "Permanent / Regular",
+        placementType: "Detailed",
         dateHired: "2021-08-01",
         division: "Procurement & General Supply Division",
         department: "Provincial General Services Office (PGSO)",
@@ -849,15 +876,11 @@
         pob: "San Jose, Northern Samar",
         nationality: "Filipino",
         religion: "Christian",
-        emergency: {
-          name: "Rosa Balite",
-          contact: "+63 905 111 2233",
-          address: "Brgy. Zone 1, San Jose",
-          relationship: "Spouse"
-        },
+        emergency: { name: "Rosa Balite", contact: "+63 905 111 2233", address: "Brgy. Zone 1, San Jose", relationship: "Spouse" },
         jobTitle: "Records Inspector I",
         status: "Active",
         employmentStatus: "Casual / Contractual",
+        placementType: "Office-Based",
         dateHired: "2023-01-15",
         division: "Archives & Records Management Division",
         department: "Provincial General Services Office (PGSO)",
@@ -876,97 +899,197 @@
         pagibig: "1212-9988-7766",
         tin: "987-654-321-000",
         photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=300"
+      },
+      {
+        id: "PGSO-2026-089",
+        lastName: "GARCIA",
+        firstName: "ANTONIO",
+        middleName: "ALVAREZ",
+        nameExtension: "",
+        contact: "+63 919 777 3311",
+        email: "antonio.garcia@northernsamar.gov.ph",
+        address: "Catarman, Northern Samar",
+        gender: "Male",
+        maritalStatus: "Single",
+        dob: "1998-04-12",
+        age: 28,
+        pob: "Laoang, Northern Samar",
+        nationality: "Filipino",
+        religion: "Roman Catholic",
+        emergency: { name: "Elena Garcia", contact: "+63 919 111 2222", address: "Laoang", relationship: "Mother" },
+        jobTitle: "Facility Maintenance Aide",
+        status: "Active",
+        employmentStatus: "Job Order",
+        placementType: "Detailed from Other Office",
+        dateHired: "2024-02-01",
+        division: "General Services & Maintenance Division",
+        department: "Provincial General Services Office (PGSO)",
+        jobLevel: "SG-03",
+        superior: "Juan Dela Cruz Dapulag",
+        regularization: "N/A",
+        separation: "N/A",
+        workLocation: "Provincial Capitol Compound, Catarman",
+        salaryType: "Daily Wage",
+        basicSalary: "₱ 14,500.00",
+        taxStatus: "Single",
+        bankName: "Land Bank of the Philippines (LBP)",
+        accountNo: "0541-3321-99",
+        sss: "34-0009988-1",
+        philhealth: "12-887766554-2",
+        pagibig: "1212-3344-5511",
+        tin: "554-332-110-000",
+        photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=300"
       }
     ];
 
-    let currentEmployee = employees[0];
+    let currentEditId = null;
 
-    // Initialize application on DOM Load
     window.addEventListener('DOMContentLoaded', () => {
-      populateEmployeeDropdown();
-      renderEmployeeData(currentEmployee);
-      setupSearchAutocomplete();
-      updateRawJsonView();
+      calculateMatrix();
+      renderEmployeeTable();
     });
 
-    // Tab Switching Logic (View / Edit / Raw Data)
-    function switchTab(tab) {
-      const vSec = document.getElementById('viewSection');
-      const eSec = document.getElementById('editSection');
-      const rSec = document.getElementById('rawSection');
+    // ================= DYNAMIC MATRIX CALCULATION ENGINE =================
+    function calculateMatrix() {
+      // Matrix map initialization
+      const counts = {
+        ob: { p: 0, co: 0, ca: 0, jo: 0 },
+        det: { p: 0, co: 0, ca: 0, jo: 0 },
+        dfo: { p: 0, co: 0, ca: 0, jo: 0 }
+      };
 
-      const btnV = document.getElementById('btnTabView');
-      const btnE = document.getElementById('btnTabEdit');
-      const btnR = document.getElementById('btnTabRaw');
+      employees.forEach(e => {
+        // Normalize Status
+        let st = 'jo';
+        const statusUpper = (e.employmentStatus || '').toUpperCase();
+        if (statusUpper.includes('PERMANENT') || statusUpper.includes('REGULAR')) st = 'p';
+        else if (statusUpper.includes('CO-TERMINUS') || statusUpper.includes('COTERMINUS')) st = 'co';
+        else if (statusUpper.includes('CASUAL') || statusUpper.includes('CONTRACTUAL')) st = 'ca';
+        else if (statusUpper.includes('JOB ORDER') || statusUpper.includes('JO')) st = 'jo';
 
-      // Reset styles
-      [btnV, btnE, btnR].forEach(b => {
-        b.className = 'flex-1 py-1 px-2.5 text-xs font-medium rounded-md text-slate-600 dark:text-slate-400 hover:text-slate-900 transition flex items-center justify-center gap-1';
+        // Normalize Placement
+        let pl = 'ob';
+        const placementUpper = (e.placementType || '').toUpperCase();
+        if (placementUpper.includes('OTHER')) pl = 'dfo';
+        else if (placementUpper.includes('DETAILED')) pl = 'det';
+        else pl = 'ob';
+
+        counts[pl][st]++;
       });
 
-      vSec.classList.add('hidden');
-      eSec.classList.add('hidden');
-      rSec.classList.add('hidden');
+      // Update Horizontal Rows
+      ['ob', 'det', 'dfo'].forEach(row => {
+        const rowTotal = counts[row].p + counts[row].co + counts[row].ca + counts[row].jo;
+        document.getElementById(`m-${row}-p`).textContent = counts[row].p;
+        document.getElementById(`m-${row}-co`).textContent = counts[row].co;
+        document.getElementById(`m-${row}-ca`).textContent = counts[row].ca;
+        document.getElementById(`m-${row}-jo`).textContent = counts[row].jo;
+        document.getElementById(`m-${row}-tot`).textContent = rowTotal;
+      });
 
-      if (tab === 'view') {
-        vSec.classList.remove('hidden');
-        btnV.className = 'flex-1 py-1 px-2.5 text-xs font-bold rounded-md bg-white dark:bg-slate-800 text-pgso-navy dark:text-pgso-gold shadow-sm transition flex items-center justify-center gap-1';
-      } else if (tab === 'edit') {
-        eSec.classList.remove('hidden');
-        btnE.className = 'flex-1 py-1 px-2.5 text-xs font-bold rounded-md bg-white dark:bg-slate-800 text-pgso-navy dark:text-pgso-gold shadow-sm transition flex items-center justify-center gap-1';
-        populateEditForm(currentEmployee);
-      } else if (tab === 'raw') {
-        rSec.classList.remove('hidden');
-        btnR.className = 'flex-1 py-1 px-2.5 text-xs font-bold rounded-md bg-white dark:bg-slate-800 text-pgso-navy dark:text-pgso-gold shadow-sm transition flex items-center justify-center gap-1';
-        updateRawJsonView();
-      }
+      // Calculate Vertical Totals
+      const totalP = counts.ob.p + counts.det.p + counts.dfo.p;
+      const totalCO = counts.ob.co + counts.det.co + counts.dfo.co;
+      const totalCA = counts.ob.ca + counts.det.ca + counts.dfo.ca;
+      const totalJO = counts.ob.jo + counts.det.jo + counts.dfo.jo;
+      const grandTotal = totalP + totalCO + totalCA + totalJO;
+
+      document.getElementById('m-v-p').textContent = totalP;
+      document.getElementById('m-v-co').textContent = totalCO;
+      document.getElementById('m-v-ca').textContent = totalCA;
+      document.getElementById('m-v-jo').textContent = totalJO;
+      document.getElementById('m-overall-total').textContent = grandTotal;
     }
 
-    // Populate Select Options
-    function populateEmployeeDropdown() {
-      const select = document.getElementById('employeeSelect');
-      select.innerHTML = '';
-      employees.forEach(emp => {
-        const opt = document.createElement('option');
-        opt.value = emp.id;
-        opt.textContent = `${emp.lastName}, ${emp.firstName} ${emp.nameExtension ? emp.nameExtension : ''} (${emp.id})`;
-        select.appendChild(opt);
+    // ================= ROSTER TABLE RENDERER =================
+    function renderEmployeeTable() {
+      const tbody = document.getElementById('employeeRosterBody');
+      const searchVal = document.getElementById('rosterSearch').value.toLowerCase();
+      const divFilter = document.getElementById('filterDivision').value;
+      const placeFilter = document.getElementById('filterPlacement').value;
+
+      tbody.innerHTML = '';
+
+      const filtered = employees.filter(e => {
+        const matchesSearch = e.lastName.toLowerCase().includes(searchVal) || 
+                              e.firstName.toLowerCase().includes(searchVal) || 
+                              e.id.toLowerCase().includes(searchVal) ||
+                              e.jobTitle.toLowerCase().includes(searchVal);
+        const matchesDiv = divFilter === 'ALL' || e.division === divFilter;
+        const matchesPlacement = placeFilter === 'ALL' || (e.placementType || 'Office-Based') === placeFilter;
+
+        return matchesSearch && matchesDiv && matchesPlacement;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-4 text-center text-slate-400">No personnel records found matching filters.</td></tr>`;
+        return;
+      }
+
+      filtered.forEach(emp => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-50 dark:hover:bg-slate-700/50 transition';
+
+        // Badge styling for status
+        let statusBadgeClass = 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300';
+        if (emp.employmentStatus.includes('Casual')) statusBadgeClass = 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300';
+        if (emp.employmentStatus.includes('Job Order')) statusBadgeClass = 'bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-300';
+        if (emp.employmentStatus.includes('Co-Terminus')) statusBadgeClass = 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300';
+
+        tr.innerHTML = `
+          <td class="py-3 px-4 flex items-center space-x-3">
+            <img src="${emp.photo}" class="w-8 h-8 rounded-full object-cover border border-pgso-gold" />
+            <div>
+              <p class="font-extrabold text-slate-900 dark:text-white uppercase">${emp.lastName}, ${emp.firstName} ${emp.nameExtension || ''}</p>
+              <p class="text-[10px] font-mono text-slate-400">${emp.id}</p>
+            </div>
+          </td>
+          <td class="py-3 px-3">
+            <p class="font-bold text-slate-800 dark:text-slate-200">${emp.jobTitle}</p>
+            <p class="text-[10px] text-slate-400">${emp.division}</p>
+          </td>
+          <td class="py-3 px-3 text-center">
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${statusBadgeClass}">
+              ${emp.employmentStatus}
+            </span>
+          </td>
+          <td class="py-3 px-3 text-center font-semibold text-slate-700 dark:text-slate-300">
+            ${emp.placementType || 'Office-Based'}
+          </td>
+          <td class="py-3 px-3 text-center font-bold text-emerald-600 dark:text-emerald-400">
+            ${emp.basicSalary}
+          </td>
+          <td class="py-3 px-4 text-center space-x-1">
+            <button onclick="viewEmployee('${emp.id}')" class="bg-pgso-navy hover:bg-slate-700 text-white px-2 py-1 rounded text-[11px] font-semibold transition" title="View Official Data Sheet">
+              <i class="fa-solid fa-eye"></i> View
+            </button>
+            <button onclick="openEditModal('${emp.id}')" class="bg-amber-500 hover:bg-amber-600 text-white px-2 py-1 rounded text-[11px] font-semibold transition" title="Edit Employee">
+              <i class="fa-solid fa-pen-to-square"></i> Edit
+            </button>
+            <button onclick="deleteEmployee('${emp.id}')" class="bg-rose-600 hover:bg-rose-700 text-white px-2 py-1 rounded text-[11px] font-semibold transition" title="Delete Entry">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
       });
     }
 
-    // Load Employee Selected from Dropdown
-    function loadSelectedEmployee() {
-      const selectVal = document.getElementById('employeeSelect').value;
-      const found = employees.find(e => e.id === selectVal);
-      if (found) {
-        currentEmployee = found;
-        renderEmployeeData(found);
-        populateEditForm(found);
-        updateRawJsonView();
-      }
-    }
+    // ================= VIEW PLATFORM ACTIONS =================
+    function viewEmployee(id) {
+      const emp = employees.find(e => e.id === id);
+      if (!emp) return;
 
-    function renderEmployeeData(emp) {
-      // Photo & Badge
       document.getElementById('empPhoto').src = emp.photo;
       document.getElementById('empIdBadge').textContent = emp.id;
-
-      // Piled Info
       document.getElementById('empLastName').textContent = emp.lastName;
       document.getElementById('empFirstName').textContent = emp.firstName;
       document.getElementById('empMiddleName').textContent = emp.middleName || 'N/A';
       document.getElementById('empNameExtension').textContent = emp.nameExtension || 'N/A';
-      
-      const contactSpan = document.getElementById('empContact').querySelector('span');
-      if (contactSpan) contactSpan.textContent = emp.contact;
-      
-      const emailSpan = document.getElementById('empEmail').querySelector('span');
-      if (emailSpan) emailSpan.textContent = emp.email;
+      document.getElementById('empContact').querySelector('span').textContent = emp.contact;
+      document.getElementById('empEmail').querySelector('span').textContent = emp.email;
+      document.getElementById('empAddress').querySelector('span').textContent = emp.address;
 
-      const addrSpan = document.getElementById('empAddress').querySelector('span');
-      if (addrSpan) addrSpan.textContent = emp.address;
-
-      // Biographical Particulars
       document.getElementById('empGender').textContent = emp.gender;
       document.getElementById('empMaritalStatus').textContent = emp.maritalStatus;
       document.getElementById('empDob').textContent = emp.dob;
@@ -975,203 +1098,144 @@
       document.getElementById('empNationality').textContent = emp.nationality;
       document.getElementById('empReligion').textContent = emp.religion;
 
-      // Emergency
       document.getElementById('emgName').textContent = emp.emergency.name;
       document.getElementById('emgRel').textContent = emp.emergency.relationship;
       document.getElementById('emgContact').textContent = emp.emergency.contact;
       document.getElementById('emgAddress').textContent = emp.emergency.address;
 
-      // Employment Details
       document.getElementById('empJobTitle').textContent = emp.jobTitle;
       document.getElementById('empEmploymentStatus').textContent = emp.employmentStatus;
+      document.getElementById('empPlacementType').textContent = emp.placementType || 'Office-Based';
       document.getElementById('empDateHired').textContent = emp.dateHired;
       document.getElementById('empDivision').textContent = emp.division;
-      document.getElementById('empDepartment').textContent = emp.department;
       document.getElementById('empJobLevel').textContent = emp.jobLevel;
       document.getElementById('empSuperior').textContent = emp.superior;
-      document.getElementById('empRegularization').textContent = emp.regularization;
-      document.getElementById('empSeparation').textContent = emp.separation;
-      document.getElementById('empWorkLocation').textContent = emp.workLocation;
 
-      // Calculate Tenure
-      const hiredYear = new Date(emp.dateHired).getFullYear();
-      const currentYear = new Date().getFullYear();
-      const tenureYrs = currentYear - hiredYear;
-      document.getElementById('empTenure').textContent = `${tenureYrs} Years in Service`;
-
-      // Compensation
-      document.getElementById('empSalaryType').textContent = emp.salaryType;
+      document.getElementById('empSalaryType').textContent = emp.salaryType || 'Monthly';
       document.getElementById('empBasicSalary').textContent = emp.basicSalary;
-      document.getElementById('empTaxStatus').textContent = emp.taxStatus;
       document.getElementById('empBankName').textContent = emp.bankName;
       document.getElementById('empBankAccount').textContent = emp.accountNo;
 
-      // Government Statutory
       document.getElementById('empSss').textContent = emp.sss;
       document.getElementById('empPhilhealth').textContent = emp.philhealth;
       document.getElementById('empPagibig').textContent = emp.pagibig;
       document.getElementById('empTin').textContent = emp.tin;
 
-      // Document Stamp Hash
-      document.getElementById('docStamp').textContent = Math.random().toString(36).substring(2, 7).toUpperCase();
+      const viewSec = document.getElementById('viewSection');
+      viewSec.classList.remove('hidden');
+      viewSec.scrollIntoView({ behavior: 'smooth' });
     }
 
-    // Populate Edit Form Fields
-    function populateEditForm(emp) {
+    function closeEmployeeView() {
+      document.getElementById('viewSection').classList.add('hidden');
+    }
+
+    // ================= EDIT ACTIONS =================
+    function openEditModal(id) {
+      const emp = employees.find(e => e.id === id);
+      if (!emp) return;
+      currentEditId = id;
+
       document.getElementById('editLastName').value = emp.lastName;
       document.getElementById('editFirstName').value = emp.firstName;
       document.getElementById('editMiddleName').value = emp.middleName || '';
-      document.getElementById('editNameExtension').value = emp.nameExtension || '';
-      document.getElementById('editContact').value = emp.contact;
-      document.getElementById('editEmail').value = emp.email;
-      document.getElementById('editAddress').value = emp.address;
-
-      document.getElementById('editGender').value = emp.gender;
-      document.getElementById('editMaritalStatus').value = emp.maritalStatus;
-      document.getElementById('editDob').value = emp.dob;
-      document.getElementById('editAge').value = emp.age;
-      document.getElementById('editPob').value = emp.pob;
-      document.getElementById('editNationality').value = emp.nationality;
-      document.getElementById('editReligion').value = emp.religion;
-
-      document.getElementById('editEmgName').value = emp.emergency.name;
-      document.getElementById('editEmgRel').value = emp.emergency.relationship;
-      document.getElementById('editEmgContact').value = emp.emergency.contact;
-      document.getElementById('editEmgAddress').value = emp.emergency.address;
-
-      document.getElementById('editJobTitle').value = emp.jobTitle;
       document.getElementById('editEmploymentStatus').value = emp.employmentStatus;
+      document.getElementById('editPlacementType').value = emp.placementType || 'Office-Based';
       document.getElementById('editDivision').value = emp.division;
-      document.getElementById('editJobLevel').value = emp.jobLevel;
+      document.getElementById('editJobTitle').value = emp.jobTitle;
       document.getElementById('editBasicSalary').value = emp.basicSalary;
-      document.getElementById('editBankName').value = emp.bankName;
-      document.getElementById('editAccountNo').value = emp.accountNo;
 
-      document.getElementById('editSss').value = emp.sss;
-      document.getElementById('editPhilhealth').value = emp.philhealth;
-      document.getElementById('editPagibig').value = emp.pagibig;
-      document.getElementById('editTin').value = emp.tin;
+      document.getElementById('editModal').classList.remove('hidden');
     }
 
-    // Save Edits to current employee
+    function closeEditModal() {
+      document.getElementById('editModal').classList.add('hidden');
+      currentEditId = null;
+    }
+
     function saveEmployeeEdits() {
-      currentEmployee.lastName = document.getElementById('editLastName').value.toUpperCase();
-      currentEmployee.firstName = document.getElementById('editFirstName').value.toUpperCase();
-      currentEmployee.middleName = document.getElementById('editMiddleName').value.toUpperCase();
-      currentEmployee.nameExtension = document.getElementById('editNameExtension').value;
-      currentEmployee.contact = document.getElementById('editContact').value;
-      currentEmployee.email = document.getElementById('editEmail').value;
-      currentEmployee.address = document.getElementById('editAddress').value;
+      const emp = employees.find(e => e.id === currentEditId);
+      if (!emp) return;
 
-      currentEmployee.gender = document.getElementById('editGender').value;
-      currentEmployee.maritalStatus = document.getElementById('editMaritalStatus').value;
-      currentEmployee.dob = document.getElementById('editDob').value;
-      currentEmployee.age = parseInt(document.getElementById('editAge').value) || currentEmployee.age;
-      currentEmployee.pob = document.getElementById('editPob').value;
-      currentEmployee.nationality = document.getElementById('editNationality').value;
-      currentEmployee.religion = document.getElementById('editReligion').value;
+      emp.lastName = document.getElementById('editLastName').value.toUpperCase();
+      emp.firstName = document.getElementById('editFirstName').value.toUpperCase();
+      emp.middleName = document.getElementById('editMiddleName').value.toUpperCase();
+      emp.employmentStatus = document.getElementById('editEmploymentStatus').value;
+      emp.placementType = document.getElementById('editPlacementType').value;
+      emp.division = document.getElementById('editDivision').value;
+      emp.jobTitle = document.getElementById('editJobTitle').value;
+      emp.basicSalary = document.getElementById('editBasicSalary').value;
 
-      currentEmployee.emergency.name = document.getElementById('editEmgName').value;
-      currentEmployee.emergency.relationship = document.getElementById('editEmgRel').value;
-      currentEmployee.emergency.contact = document.getElementById('editEmgContact').value;
-      currentEmployee.emergency.address = document.getElementById('editEmgAddress').value;
-
-      currentEmployee.jobTitle = document.getElementById('editJobTitle').value;
-      currentEmployee.employmentStatus = document.getElementById('editEmploymentStatus').value;
-      currentEmployee.division = document.getElementById('editDivision').value;
-      currentEmployee.jobLevel = document.getElementById('editJobLevel').value;
-      currentEmployee.basicSalary = document.getElementById('editBasicSalary').value;
-      currentEmployee.bankName = document.getElementById('editBankName').value;
-      currentEmployee.accountNo = document.getElementById('editAccountNo').value;
-
-      currentEmployee.sss = document.getElementById('editSss').value;
-      currentEmployee.philhealth = document.getElementById('editPhilhealth').value;
-      currentEmployee.pagibig = document.getElementById('editPagibig').value;
-      currentEmployee.tin = document.getElementById('editTin').value;
-
-      // Re-render
-      renderEmployeeData(currentEmployee);
-      populateEmployeeDropdown();
-      document.getElementById('employeeSelect').value = currentEmployee.id;
-      switchTab('view');
+      calculateMatrix();
+      renderEmployeeTable();
+      closeEditModal();
     }
 
-    function updateRawJsonView() {
-      document.getElementById('rawJsonContainer').textContent = JSON.stringify(employees, null, 2);
+    // ================= ADD NEW ENTRY ACTIONS =================
+    function openAddEmployeeModal() {
+      document.getElementById('addModal').classList.remove('hidden');
     }
 
-    function copyRawJson() {
-      const rawText = JSON.stringify(employees, null, 2);
-      navigator.clipboard.writeText(rawText).then(() => {
-        alert("Raw database JSON copied to clipboard!");
-      });
+    function closeAddEmployeeModal() {
+      document.getElementById('addModal').classList.add('hidden');
+      document.getElementById('addEmployeeForm').reset();
     }
 
-    function setupSearchAutocomplete() {
-      const searchInput = document.getElementById('employeeSearch');
-      const suggestBox = document.getElementById('suggestBox');
-      const clearBtn = document.getElementById('clearSearch');
+    function submitNewEmployee() {
+      const newId = `PGSO-2026-${Math.floor(100 + Math.random() * 900)}`;
+      const newEmp = {
+        id: newId,
+        lastName: document.getElementById('addLastName').value.toUpperCase(),
+        firstName: document.getElementById('addFirstName').value.toUpperCase(),
+        middleName: document.getElementById('addMiddleName').value.toUpperCase(),
+        nameExtension: "",
+        contact: document.getElementById('addContact').value || "+63 917 000 0000",
+        email: document.getElementById('addEmail').value || "employee@northernsamar.gov.ph",
+        address: "Northern Samar",
+        gender: document.getElementById('addGender').value,
+        maritalStatus: "Single",
+        dob: "1995-01-01",
+        age: 30,
+        pob: "Northern Samar",
+        nationality: "Filipino",
+        religion: "Roman Catholic",
+        emergency: { name: "N/A", contact: "N/A", address: "N/A", relationship: "N/A" },
+        jobTitle: document.getElementById('addJobTitle').value,
+        status: "Active",
+        employmentStatus: document.getElementById('addEmploymentStatus').value,
+        placementType: document.getElementById('addPlacementType').value,
+        dateHired: new Date().toISOString().split('T')[0],
+        division: document.getElementById('addDivision').value,
+        department: "Provincial General Services Office (PGSO)",
+        jobLevel: "SG-08",
+        superior: "PGSO Head",
+        regularization: "N/A",
+        separation: "N/A",
+        workLocation: "Provincial Capitol Compound, Catarman",
+        salaryType: "Monthly Regular",
+        basicSalary: document.getElementById('addBasicSalary').value || "₱ 20,000.00",
+        taxStatus: "Single",
+        bankName: "Land Bank of the Philippines (LBP)",
+        accountNo: "0541-0000-00",
+        sss: "00-0000000-0",
+        philhealth: "00-000000000-0",
+        pagibig: "0000-0000-0000",
+        tin: "000-000-000-000",
+        photo: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=300"
+      };
 
-      searchInput.addEventListener('input', function() {
-        const query = this.value.toLowerCase().trim();
-        
-        if (query.length > 0) {
-          clearBtn.classList.remove('hidden');
-        } else {
-          clearBtn.classList.add('hidden');
-          suggestBox.classList.add('hidden');
-          return;
-        }
-
-        const matches = employees.filter(e => 
-          e.lastName.toLowerCase().includes(query) ||
-          e.firstName.toLowerCase().includes(query) ||
-          e.id.toLowerCase().includes(query) ||
-          e.division.toLowerCase().includes(query) ||
-          e.jobTitle.toLowerCase().includes(query)
-        );
-
-        if (matches.length > 0) {
-          suggestBox.innerHTML = '';
-          matches.forEach(m => {
-            const item = document.createElement('div');
-            item.className = 'p-2.5 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer border-b border-slate-100 dark:border-slate-700 text-xs flex justify-between items-center';
-            item.innerHTML = `
-              <div>
-                <span class="font-bold text-pgso-navy dark:text-pgso-gold block">${m.lastName}, ${m.firstName}</span>
-                <span class="text-slate-500 dark:text-slate-400 text-[11px]">${m.jobTitle} • ${m.division}</span>
-              </div>
-              <span class="font-mono text-[10px] bg-slate-200 dark:bg-slate-900 px-2 py-0.5 rounded text-slate-700 dark:text-slate-300">${m.id}</span>
-            `;
-            item.onclick = () => {
-              currentEmployee = m;
-              renderEmployeeData(m);
-              document.getElementById('employeeSelect').value = m.id;
-              suggestBox.classList.add('hidden');
-              switchTab('view');
-            };
-            suggestBox.appendChild(item);
-          });
-          suggestBox.classList.remove('hidden');
-        } else {
-          suggestBox.innerHTML = `<div class="p-2.5 text-xs text-slate-400 text-center">No matching personnel record found.</div>`;
-          suggestBox.classList.remove('hidden');
-        }
-      });
-
-      document.addEventListener('click', function(e) {
-        if (!searchInput.contains(e.target) && !suggestBox.contains(e.target)) {
-          suggestBox.classList.add('hidden');
-        }
-      });
+      employees.push(newEmp);
+      calculateMatrix();
+      renderEmployeeTable();
+      closeAddEmployeeModal();
     }
 
-    function clearSearchInput() {
-      const searchInput = document.getElementById('employeeSearch');
-      searchInput.value = '';
-      document.getElementById('clearSearch').classList.add('hidden');
-      document.getElementById('suggestBox').classList.add('hidden');
-      searchInput.focus();
+    function deleteEmployee(id) {
+      if (confirm(`Are you sure you want to remove employee entry ${id}?`)) {
+        employees = employees.filter(e => e.id !== id);
+        calculateMatrix();
+        renderEmployeeTable();
+      }
     }
 
     function toggleTheme() {
@@ -1184,10 +1248,6 @@
         html.classList.add('dark');
         themeIcon.className = 'fa-solid fa-sun text-base text-pgso-gold';
       }
-    }
-
-    function exportRecord() {
-      window.print();
     }
   </script>
 </body>
