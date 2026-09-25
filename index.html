@@ -277,7 +277,7 @@
             
             <div class="col-span-3 sm:col-span-2 flex justify-center sm:justify-start">
               <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-pgso-gold/60 p-1 flex items-center justify-center bg-slate-50 dark:bg-slate-900 shadow-sm overflow-hidden">
-                <img src="capitol logo.png" alt="Capitol Logo" class="w-full h-full object-contain" />
+                <img src="capitol logo.png" alt="Capitol Logo" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/100x100/134074/FFFFFF?text=CAPITOL'" />
               </div>
             </div>
 
@@ -295,7 +295,7 @@
 
             <div class="col-span-3 sm:col-span-2 flex justify-center sm:justify-end">
               <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-pgso-gold/60 p-1 flex items-center justify-center bg-slate-50 dark:bg-slate-900 shadow-sm overflow-hidden">
-                <img src="pgso official logo.png" alt="PGSO Official Logo" class="w-full h-full object-contain" />
+                <img src="pgso official logo.png" alt="PGSO Official Logo" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/100x100/134074/FFFFFF?text=PGSO'" />
               </div>
             </div>
 
@@ -938,9 +938,31 @@
       renderEmployeeTable();
     });
 
+    // Helper Utility for Service Length Calculation
+    function calculateTenure(dateString) {
+      if (!dateString) return 'N/A';
+      const start = new Date(dateString);
+      const now = new Date();
+      if (isNaN(start.getTime())) return 'N/A';
+
+      let years = now.getFullYear() - start.getFullYear();
+      let months = now.getMonth() - start.getMonth();
+
+      if (months < 0) {
+        years--;
+        months += 12;
+      }
+
+      if (years === 0 && months === 0) return 'Less than 1 month';
+      
+      let res = [];
+      if (years > 0) res.push(`${years} yr${years > 1 ? 's' : ''}`);
+      if (months > 0) res.push(`${months} mo${months > 1 ? 's' : ''}`);
+      return res.join(', ');
+    }
+
     // ================= DYNAMIC MATRIX CALCULATION ENGINE =================
     function calculateMatrix() {
-      // Matrix map initialization
       const counts = {
         ob: { p: 0, co: 0, ca: 0, jo: 0 },
         det: { p: 0, co: 0, ca: 0, jo: 0 },
@@ -948,7 +970,6 @@
       };
 
       employees.forEach(e => {
-        // Normalize Status
         let st = 'jo';
         const statusUpper = (e.employmentStatus || '').toUpperCase();
         if (statusUpper.includes('PERMANENT') || statusUpper.includes('REGULAR')) st = 'p';
@@ -956,7 +977,6 @@
         else if (statusUpper.includes('CASUAL') || statusUpper.includes('CONTRACTUAL')) st = 'ca';
         else if (statusUpper.includes('JOB ORDER') || statusUpper.includes('JO')) st = 'jo';
 
-        // Normalize Placement
         let pl = 'ob';
         const placementUpper = (e.placementType || '').toUpperCase();
         if (placementUpper.includes('OTHER')) pl = 'dfo';
@@ -966,7 +986,6 @@
         counts[pl][st]++;
       });
 
-      // Update Horizontal Rows
       ['ob', 'det', 'dfo'].forEach(row => {
         const rowTotal = counts[row].p + counts[row].co + counts[row].ca + counts[row].jo;
         document.getElementById(`m-${row}-p`).textContent = counts[row].p;
@@ -976,7 +995,6 @@
         document.getElementById(`m-${row}-tot`).textContent = rowTotal;
       });
 
-      // Calculate Vertical Totals
       const totalP = counts.ob.p + counts.det.p + counts.dfo.p;
       const totalCO = counts.ob.co + counts.det.co + counts.dfo.co;
       const totalCA = counts.ob.ca + counts.det.ca + counts.dfo.ca;
@@ -1019,7 +1037,6 @@
         const tr = document.createElement('tr');
         tr.className = 'hover:bg-slate-50 dark:hover:bg-slate-700/50 transition';
 
-        // Badge styling for status
         let statusBadgeClass = 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300';
         if (emp.employmentStatus.includes('Casual')) statusBadgeClass = 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300';
         if (emp.employmentStatus.includes('Job Order')) statusBadgeClass = 'bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-300';
@@ -1096,6 +1113,7 @@
       document.getElementById('empEmploymentStatus').textContent = emp.employmentStatus;
       document.getElementById('empPlacementType').textContent = emp.placementType || 'Office-Based';
       document.getElementById('empDateHired').textContent = emp.dateHired;
+      document.getElementById('empTenure').textContent = calculateTenure(emp.dateHired);
       document.getElementById('empDivision').textContent = emp.division;
       document.getElementById('empJobLevel').textContent = emp.jobLevel;
       document.getElementById('empSuperior').textContent = emp.superior;
@@ -1109,6 +1127,8 @@
       document.getElementById('empPhilhealth').textContent = emp.philhealth;
       document.getElementById('empPagibig').textContent = emp.pagibig;
       document.getElementById('empTin').textContent = emp.tin;
+
+      document.getElementById('docStamp').textContent = `2026-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
 
       const viewSec = document.getElementById('viewSection');
       viewSec.classList.remove('hidden');
@@ -1158,6 +1178,10 @@
       calculateMatrix();
       renderEmployeeTable();
       closeEditModal();
+
+      if (!document.getElementById('viewSection').classList.contains('hidden') && document.getElementById('empIdBadge').textContent === emp.id) {
+        viewEmployee(emp.id);
+      }
     }
 
     // ================= ADD NEW ENTRY ACTIONS =================
@@ -1184,7 +1208,7 @@
         gender: document.getElementById('addGender').value,
         maritalStatus: "Single",
         dob: "1995-01-01",
-        age: 30,
+        age: 31,
         pob: "Northern Samar",
         nationality: "Filipino",
         religion: "Roman Catholic",
@@ -1224,6 +1248,9 @@
         employees = employees.filter(e => e.id !== id);
         calculateMatrix();
         renderEmployeeTable();
+        if (document.getElementById('empIdBadge').textContent === id) {
+          closeEmployeeView();
+        }
       }
     }
 
