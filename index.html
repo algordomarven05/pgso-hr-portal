@@ -69,13 +69,11 @@
     </div>
   </header>
 
-  <!-- GLOBAL NOTIFICATION -->
   <div id="globalNotification" class="no-print max-w-7xl mx-auto px-4 pt-4 hidden">
     <div class="notification-bar rounded-lg px-4 py-3 text-sm font-medium shadow-sm"></div>
   </div>
 
   <main class="max-w-7xl mx-auto px-4 py-4 space-y-6">
-    <!-- MATRIX SECTION -->
     <section class="no-print bg-white rounded-xl shadow-md border p-4 sm:p-6">
       <div class="flex flex-col sm:flex-row justify-between gap-2 mb-4 border-b pb-3">
         <div>
@@ -140,7 +138,6 @@
       </div>
     </section>
 
-    <!-- ROSTER SECTION -->
     <section class="no-print bg-white rounded-xl shadow-md border p-4 sm:p-6">
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5">
         <div>
@@ -152,7 +149,6 @@
         <div class="flex flex-wrap gap-2">
           <select id="filterDivision" onchange="renderEmployeeTable()" class="py-1.5 px-3 text-xs border rounded-lg">
             <option value="ALL">All Divisions</option>
-            <!-- Dynamically populated -->
           </select>
           <select id="filterPlacement" onchange="renderEmployeeTable()" class="py-1.5 px-3 text-xs border rounded-lg">
             <option value="ALL">All Placement Types</option>
@@ -182,7 +178,6 @@
       </div>
     </section>
 
-    <!-- VIEW SECTION -->
     <div id="viewSection" class="hidden bg-white rounded-xl shadow-lg border p-4 sm:p-8">
       <div class="no-print flex justify-between items-center border-b pb-3 mb-6">
         <span class="text-xs font-bold uppercase text-pgso-navy">Employee Record Viewer</span>
@@ -215,13 +210,12 @@
           </div>
         </header>
 
-        <!-- SECTION 1: PERSONAL INFO -->
         <section class="mb-5">
           <h3 class="text-sm font-bold text-pgso-blue uppercase mb-3 border-b pb-1">1. Personal Information</h3>
           <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
             <div class="md:col-span-5 bg-slate-50 p-3 rounded-xl border">
               <div class="text-center mb-3">
-                <img id="empPhoto" src="https://placehold.co/160x160/134074/FFFFFF?text=Photo" class="w-28 h-28 object-cover rounded-xl border-2 border-pgso-gold" />
+                <img id="empPhoto" src="https://placehold.co/160x160/134074/FFFFFF?text=Photo" class="w-28 h-28 object-cover rounded-xl border-2 border-pgso-gold" alt="Employee Photo" />
               </div>
               <div class="space-y-2 text-xs">
                 <div class="flex justify-between"><span class="font-bold text-slate-500">Last Name:</span><span id="empLastName">---</span></div>
@@ -239,14 +233,13 @@
                   <div><span class="text-slate-500">Gender:</span> <span id="empGender">---</span></div>
                   <div><span class="text-slate-500">Civil Status:</span> <span id="empMaritalStatus">---</span></div>
                   <div><span class="text-slate-500">Birth Date:</span> <span id="empDob">---</span></div>
-                  <div><span class="text-slate-500">Nationality:</span> <span id="empNationality">---</span></div>
+                  <div><span class="text-slate-500">Nationality:</span> <span id="empNationality">Filipino</span></div>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        <!-- SECTION 2: EMPLOYMENT WITH NEW FIELDS -->
         <section class="mb-5">
           <h3 class="text-sm font-bold text-pgso-blue uppercase mb-3 border-b pb-1">2. Employment & Position Details</h3>
           <div class="bg-slate-50 p-3 rounded-xl border text-xs">
@@ -295,7 +288,6 @@
           </div>
         </section>
 
-        <!-- SECTIONS 3 & 4 -->
         <section class="mb-5">
           <h3 class="text-sm font-bold text-pgso-blue uppercase mb-3 border-b pb-1">3. Compensation</h3>
           <div class="bg-slate-50 p-3 rounded-xl border text-xs">
@@ -305,8 +297,9 @@
             </div>
           </div>
         </section>
+
         <section class="mb-4">
-          <h3 class="text-sm font-bold text-pgso-blue uppercase mb-3 border-b pb-1">4. Statutory Benefits & IDs</h3>
+          <h3 class="text-sm font-bold text-pgso-blue uppercase mb-3 border-b pb-1">4. Government Statutory Benefits & IDs</h3>
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
             <div class="bg-slate-50 p-2.5 rounded-lg border"><span class="block text-slate-500">SSS</span><span id="empSss" class="font-bold">---</span></div>
             <div class="bg-slate-50 p-2.5 rounded-lg border"><span class="block text-slate-500">PhilHealth</span><span id="empPhilhealth" class="font-bold">---</span></div>
@@ -317,18 +310,15 @@
       </div>
     </div>
   </main>
-
-  <!-- ADD/EDIT MODAL -->
-  <div id="employeeModal" class="fixed inset-0 z-50 hidden bg-black/50 flex items-center justify-center p-4">
+    <div id="employeeModal" class="fixed inset-0 z-50 hidden bg-black/50 flex items-center justify-center p-4">
     <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
       <div class="p-5 border-b flex justify-between items-center sticky top-0 bg-white">
         <h3 id="modalTitle" class="text-lg font-bold text-pgso-blue">Add New Employee</h3>
-        <button onclick="closeEmployeeModal()" class="text-slate-400 hover:text-slate-600 text-xl">&times;</button>
+        <button onclick="closeEmployeeModal()" class="text-slate-400 hover:text-slate-600 text-2xl">&times;</button>
       </div>
       <form id="employeeForm" class="p-5 space-y-5">
         <input type="hidden" id="editIndex" value="-1">
         
-        <!-- SECTION 1 -->
         <div>
           <h4 class="font-bold text-pgso-navy mb-3">1. Personal Information</h4>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -344,7 +334,6 @@
           </div>
         </div>
 
-        <!-- SECTION 2 WITH NEW DIVISION SYSTEM -->
         <div>
           <h4 class="font-bold text-pgso-navy mb-3">2. Employment Details</h4>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -352,7 +341,6 @@
             <div><label class="block text-xs font-medium mb-1">Biometrics No.</label><input type="text" id="biometricsNo" class="w-full px-3 py-2 border rounded-lg text-sm"></div>
             <div class="md:col-span-2"><label class="block text-xs font-medium mb-1">Designation / Job Title *</label><input type="text" id="jobTitle" required class="w-full px-3 py-2 border rounded-lg text-sm"></div>
             
-            <!-- DIVISION SELECTOR + ADD NEW -->
             <div class="md:col-span-2">
               <label class="block text-xs font-medium mb-1">Division / Section *</label>
               <div class="flex gap-2">
@@ -363,7 +351,6 @@
                   <option value="GFMD">GFMD - General Facilities & Maintenance Division</option>
                   <option value="TSD">TSD - Technical Services Division</option>
                   <option value="ASD">ASD - Administrative Support Division</option>
-                  <!-- Custom divisions appended dynamically -->
                 </select>
                 <button type="button" onclick="openAddDivisionModal()" class="px-3 py-2 bg-pgso-accent text-white rounded-lg text-sm font-medium" title="Add New Division">
                   <i class="fa-solid fa-plus"></i>
@@ -390,7 +377,6 @@
           </div>
         </div>
 
-        <!-- SECTION 3 -->
         <div>
           <h4 class="font-bold text-pgso-navy mb-3">3. Compensation</h4>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -399,7 +385,6 @@
           </div>
         </div>
 
-        <!-- SECTION 4 -->
         <div>
           <h4 class="font-bold text-pgso-navy mb-3">4. Government IDs</h4>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -418,13 +403,12 @@
     </div>
   </div>
 
-  <!-- ADD DIVISION MODAL -->
   <div id="addDivisionModal" class="fixed inset-0 z-60 hidden bg-black/50 flex items-center justify-center p-4">
     <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-5">
       <h3 class="text-lg font-bold text-pgso-blue mb-4">Add New Division</h3>
       <div class="space-y-3">
         <div>
-          <label class="block text-xs font-medium mb-1">Division Code (e.g., FMD, ITD)</label>
+          <label class="block text-xs font-medium mb-1">Division Code (e.g., HRMD, ITD)</label>
           <input type="text" id="newDivisionCode" class="w-full px-3 py-2 border rounded-lg text-sm uppercase" placeholder="e.g., HRMD">
         </div>
         <div>
@@ -432,15 +416,14 @@
           <input type="text" id="newDivisionName" class="w-full px-3 py-2 border rounded-lg text-sm" placeholder="e.g., Human Resource Management Division">
         </div>
         <div class="flex gap-3 pt-3">
-          <button onclick="confirmAddDivision()" class="flex-1 bg-pgso-accent text-white py-2 rounded-lg font-bold">Add Division</button>
-          <button onclick="closeAddDivisionModal()" class="px-6 bg-slate-200 py-2 rounded-lg font-bold">Cancel</button>
+          <button type="button" onclick="confirmAddDivision()" class="flex-1 bg-pgso-accent text-white py-2 rounded-lg font-bold">Add Division</button>
+          <button type="button" onclick="closeAddDivisionModal()" class="px-6 bg-slate-200 py-2 rounded-lg font-bold">Cancel</button>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    // STANDARD DIVISIONS + CUSTOM SUPPORT
     const STANDARD_DIVISIONS = [
       { code: 'PSD', name: 'Personnel Services Division' },
       { code: 'ARMD', name: 'Archives & Records Management Division' },
@@ -449,11 +432,9 @@
       { code: 'ASD', name: 'Administrative Support Division' }
     ];
 
-    // Data storage
     let employees = JSON.parse(localStorage.getItem('pgsoEmployees') || '[]');
     let customDivisions = JSON.parse(localStorage.getItem('pgsoCustomDivisions') || '[]');
 
-    // Save helpers
     function saveEmployees() {
       localStorage.setItem('pgsoEmployees', JSON.stringify(employees));
     }
@@ -461,9 +442,9 @@
       localStorage.setItem('pgsoCustomDivisions', JSON.stringify(customDivisions));
     }
 
-    // Notification system
     function showNotification(message, type = 'success', containerId = 'globalNotification') {
       const container = document.getElementById(containerId);
+      if (!container) return;
       const bar = container.querySelector('.notification-bar');
       
       container.classList.remove('hidden');
@@ -483,37 +464,31 @@
       }, 4000);
     }
 
-    // Division select population
     function populateDivisionOptions() {
       const select = document.getElementById('division');
       const filterSelect = document.getElementById('filterDivision');
+      if (!select || !filterSelect) return;
       
-      // Save current values
       const currentVal = select.value;
       const filterVal = filterSelect.value;
       
-      // Clear and rebuild
       select.innerHTML = '<option value="">Select or Add New...</option>';
       filterSelect.innerHTML = '<option value="ALL">All Divisions</option>';
       
-      // Standard divisions
       STANDARD_DIVISIONS.forEach(d => {
         select.innerHTML += `<option value="${d.code}">${d.code} - ${d.name}</option>`;
         filterSelect.innerHTML += `<option value="${d.code}">${d.code} - ${d.name}</option>`;
       });
       
-      // Custom divisions
       customDivisions.forEach(d => {
         select.innerHTML += `<option value="${d.code}">${d.code} - ${d.name}</option>`;
         filterSelect.innerHTML += `<option value="${d.code}">${d.code} - ${d.name}</option>`;
       });
       
-      // Restore selection
       select.value = currentVal;
       filterSelect.value = filterVal;
     }
 
-    // Division modal handlers
     function openAddDivisionModal() {
       document.getElementById('addDivisionModal').classList.remove('hidden');
     }
@@ -531,7 +506,6 @@
         return;
       }
       
-      // Check duplicates
       const allCodes = [...STANDARD_DIVISIONS.map(d => d.code), ...customDivisions.map(d => d.code)];
       if (allCodes.includes(code)) {
         showNotification('This division code already exists.', 'error', 'tableNotification');
@@ -541,15 +515,12 @@
       customDivisions.push({ code, name });
       saveCustomDivisions();
       populateDivisionOptions();
-      
-      // Auto-select the new division
       document.getElementById('division').value = code;
       
       showNotification(`New division "${code}" added successfully!`, 'success', 'tableNotification');
       closeAddDivisionModal();
     }
 
-    // Modal controls
     function openAddEmployeeModal() {
       document.getElementById('modalTitle').textContent = 'Add New Employee';
       document.getElementById('editIndex').value = '-1';
@@ -563,7 +534,6 @@
       document.getElementById('modalTitle').textContent = 'Edit Employee Record';
       document.getElementById('editIndex').value = index;
       
-      // Populate all fields — Sections 1–4
       document.getElementById('lastName').value = emp.lastName || '';
       document.getElementById('firstName').value = emp.firstName || '';
       document.getElementById('middleName').value = emp.middleName || '';
@@ -600,13 +570,15 @@
       document.getElementById('employeeModal').classList.add('hidden');
     }
 
-    // Form submission
-    document.getElementById('employeeForm').addEventListener('submit', function(e) {
+    function closeEmployeeView() {
+      document.getElementById('viewSection').classList.add('hidden');
+    }
+        document.getElementById('employeeForm').addEventListener('submit', function(e) {
       e.preventDefault();
       
       const index = parseInt(document.getElementById('editIndex').value);
       const employee = {
-        id: index >= 0 ? employees[index].id : ('PGSO-' + Date.now()),
+        id: index >= 0 && employees[index] ? employees[index].id : ('PGSO-' + Date.now()),
         lastName: document.getElementById('lastName').value.trim(),
         firstName: document.getElementById('firstName').value.trim(),
         middleName: document.getElementById('middleName').value.trim(),
@@ -654,7 +626,6 @@
       );
     });
 
-    // Render roster
     function renderEmployeeTable() {
       const filterDiv = document.getElementById('filterDivision').value;
       const filterPlace = document.getElementById('filterPlacement').value;
@@ -666,13 +637,14 @@
         const matchPlace = filterPlace === 'ALL' || emp.placementType === filterPlace;
         const matchSearch = search === '' || 
           `${emp.lastName} ${emp.firstName}`.toLowerCase().includes(search) ||
-          emp.employeeIdNo?.toLowerCase().includes(search) ||
-          emp.jobTitle?.toLowerCase().includes(search);
+          (emp.employeeIdNo && emp.employeeIdNo.toLowerCase().includes(search)) ||
+          (emp.jobTitle && emp.jobTitle.toLowerCase().includes(search));
         return matchDiv && matchPlace && matchSearch;
       });
       
-      tbody.innerHTML = filtered.length === 0 ? `<tr><td colspan="6" class="py-6 text-center text-slate-500">No employee records found.</td></tr>` :
-        filtered.map((emp, idx) => {
+      tbody.innerHTML = filtered.length === 0 
+        ? `<tr><td colspan="6" class="py-6 text-center text-slate-500">No employee records found.</td></tr>`
+        : filtered.map((emp) => {
           const realIndex = employees.indexOf(emp);
           const statusColor = {
             'Permanent': 'bg-emerald-100 text-emerald-800',
@@ -706,7 +678,6 @@
       updateMatrix();
     }
 
-    // Matrix update
     function updateMatrix() {
       const types = ['Permanent', 'Co-Terminus', 'Casual', 'Job Order'];
       const placeTypes = ['Office-Based', 'Detailed', 'Detailed from Other Office'];
@@ -720,7 +691,8 @@
         let rowTotal = 0;
         types.forEach(status => {
           const count = employees.filter(e => e.placementType === place && e.employmentStatus === status).length;
-          document.getElementById(`m-${prefix}-${status === 'Permanent' ? 'p' : status === 'Co-Terminus' ? 'co' : status === 'Casual' ? 'ca' : 'jo'}`).textContent = count;
+          const key = status === 'Permanent' ? 'p' : status === 'Co-Terminus' ? 'co' : status === 'Casual' ? 'ca' : 'jo';
+          document.getElementById(`m-${prefix}-${key}`).textContent = count;
           vertical[status] += count;
           rowTotal += count;
         });
@@ -735,7 +707,6 @@
       document.getElementById('m-overall-total').textContent = grandTotal;
     }
 
-    // View & Delete
     function viewEmployee(index) {
       const emp = employees[index];
       document.getElementById('viewSection').classList.remove('hidden');
@@ -749,10 +720,48 @@
       document.getElementById('empGender').textContent = emp.gender || 'N/A';
       document.getElementById('empMaritalStatus').textContent = emp.maritalStatus || 'N/A';
       document.getElementById('empDob').textContent = emp.dob || 'N/A';
-      document.getElementById('empNationality').textContent = 'Filipino';
       
       document.getElementById('empEmployeeIdNo').textContent = emp.employeeIdNo || 'N/A';
       document.getElementById('empBiometricsNo').textContent = emp.biometricsNo || 'N/A';
       document.getElementById('empJobTitle').textContent = emp.jobTitle;
       document.getElementById('empDivision').textContent = emp.division || 'N/A';
-      document.getElementById('
+      document.getElementById('empEmploymentStatus').textContent = emp.employmentStatus || 'N/A';
+      document.getElementById('empPlacementType').textContent = emp.placementType || 'N/A';
+      document.getElementById('empDateHired').textContent = emp.dateHired || 'N/A';
+      document.getElementById('empJobLevel').textContent = emp.jobLevel || 'N/A';
+      document.getElementById('empBasicSalary').textContent = emp.basicSalary ? '₱' + emp.basicSalary.toLocaleString() : 'N/A';
+      
+      document.getElementById('empBankName').textContent = emp.bankName || 'N/A';
+      document.getElementById('empBankAccount').textContent = emp.bankAccount || 'N/A';
+      
+      document.getElementById('empSss').textContent = emp.sss || 'N/A';
+      document.getElementById('empPhilhealth').textContent = emp.philhealth || 'N/A';
+      document.getElementById('empPagibig').textContent = emp.pagibig || 'N/A';
+      document.getElementById('empTin').textContent = emp.tin || 'N/A';
+            document.getElementById('empBankName').textContent = emp.bankName || 'N/A';
+      document.getElementById('empBankAccount').textContent = emp.bankAccount || 'N/A';
+      
+      document.getElementById('empSss').textContent = emp.sss || 'N/A';
+      document.getElementById('empPhilhealth').textContent = emp.philhealth || 'N/A';
+      document.getElementById('empPagibig').textContent = emp.pagibig || 'N/A';
+      document.getElementById('empTin').textContent = emp.tin || 'N/A';
+    }
+
+    function deleteEmployee(index) {
+      if (confirm('Are you sure you want to delete this employee record? This cannot be undone.')) {
+        employees.splice(index, 1);
+        saveEmployees();
+        renderEmployeeTable();
+        updateMatrix();
+        showNotification('Employee record deleted successfully.', 'success', 'tableNotification');
+      }
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      populateDivisionOptions();
+      renderEmployeeTable();
+    });
+  </script>
+</body>
+</html>
