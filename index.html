@@ -603,6 +603,7 @@
         </div>
 
         <form id="editForm" onsubmit="event.preventDefault(); saveEmployeeEdits();" class="space-y-4 text-xs">
+          <input type="hidden" id="editEmpId" />
           <!-- Categorization & Status Box -->
           <div class="bg-blue-50 dark:bg-slate-900/80 p-3 rounded-lg border border-blue-200 dark:border-slate-700">
             <h4 class="font-bold text-pgso-navy dark:text-pgso-gold uppercase text-[11px] mb-2">Category & Employment Status</h4>
@@ -668,7 +669,7 @@
       </div>
     </div>
 
-    <!-- ================= ADD NEW EMPLOYEE ENTRY MODAL (COMPREHENSIVE ALL-SECTIONS) ================= -->
+    <!-- ================= ADD NEW EMPLOYEE ENTRY MODAL ================= -->
     <div id="addModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
       <div class="bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 max-w-4xl w-full max-h-[92vh] overflow-y-auto p-5 sm:p-6">
         
@@ -909,6 +910,7 @@
 
   </main>
 
+  <!-- SCRIPT LOGIC -->
   <script>
     // INITIAL DATASET
     let employees = [
@@ -980,468 +982,27 @@
         superior: "Juan Dela Cruz Dapulag",
         regularization: "2022-02-01",
         separation: "N/A",
-        workLocation: "PGSO Warehouse Building, Catarman",
+        workLocation: "Provincial Capitol Compound, Catarman",
         salaryType: "Monthly Regular",
         basicSalary: "₱ 33,843.00",
-        taxStatus: "Single",
-        bankName: "Development Bank of the Philippines (DBP)",
-        accountNo: "005-01298-520-1",
-        sss: "03-9981234-9",
-        philhealth: "19-025114221-0",
-        pagibig: "1020-3344-5566",
-        tin: "412-889-102-000",
+        taxStatus: "Single Taxable",
+        bankName: "Land Bank of the Philippines (LBP)",
+        accountNo: "0541-9923-44",
+        sss: "34-9912384-1",
+        philhealth: "12-098765432-1",
+        pagibig: "1211-9988-7766",
+        tin: "456-789-012-000",
         photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=300"
-      },
-      {
-        id: "PGSO-2025-015",
-        lastName: "BALITE",
-        firstName: "CARLOS",
-        middleName: "MENDOZA",
-        nameExtension: "III",
-        contact: "+63 905 444 8899",
-        email: "carlos.balite@northernsamar.gov.ph",
-        address: "Brgy. Zone 1, San Jose, Northern Samar",
-        gender: "Male",
-        maritalStatus: "Married",
-        dob: "1990-02-10",
-        age: 36,
-        pob: "San Jose, Northern Samar",
-        nationality: "Filipino",
-        religion: "Christian",
-        emergency: { name: "Rosa Balite", contact: "+63 905 111 2233", address: "Brgy. Zone 1, San Jose", relationship: "Spouse" },
-        jobTitle: "Records Inspector I",
-        status: "Active",
-        employmentStatus: "Casual / Contractual",
-        placementType: "Office-Based",
-        dateHired: "2023-01-15",
-        division: "Archives & Records Management Division",
-        department: "Provincial General Services Office (PGSO)",
-        jobLevel: "SG-11",
-        superior: "Ma. Eleanor Tayam",
-        regularization: "N/A",
-        separation: "N/A",
-        workLocation: "Provincial Capitol Compound, Catarman",
-        salaryType: "Daily Wage / Monthly Casual",
-        basicSalary: "₱ 27,000.00",
-        taxStatus: "Married Taxable",
-        bankName: "Land Bank of the Philippines (LBP)",
-        accountNo: "0541-9921-04",
-        sss: "34-1122334-5",
-        philhealth: "12-009876543-1",
-        pagibig: "1212-9988-7766",
-        tin: "987-654-321-000",
-        photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=300"
-      },
-      {
-        id: "PGSO-2026-089",
-        lastName: "GARCIA",
-        firstName: "ANTONIO",
-        middleName: "ALVAREZ",
-        nameExtension: "",
-        contact: "+63 919 777 3311",
-        email: "antonio.garcia@northernsamar.gov.ph",
-        address: "Catarman, Northern Samar",
-        gender: "Male",
-        maritalStatus: "Single",
-        dob: "1998-04-12",
-        age: 28,
-        pob: "Laoang, Northern Samar",
-        nationality: "Filipino",
-        religion: "Roman Catholic",
-        emergency: { name: "Elena Garcia", contact: "+63 919 111 2222", address: "Laoang", relationship: "Mother" },
-        jobTitle: "Facility Maintenance Aide",
-        status: "Active",
-        employmentStatus: "Job Order",
-        placementType: "Detailed from Other Office",
-        dateHired: "2024-02-01",
-        division: "General Services & Maintenance Division",
-        department: "Provincial General Services Office (PGSO)",
-        jobLevel: "SG-03",
-        superior: "Juan Dela Cruz Dapulag",
-        regularization: "N/A",
-        separation: "N/A",
-        workLocation: "Provincial Capitol Compound, Catarman",
-        salaryType: "Daily Wage",
-        basicSalary: "₱ 14,500.00",
-        taxStatus: "Single",
-        bankName: "Land Bank of the Philippines (LBP)",
-        accountNo: "0541-3321-99",
-        sss: "34-0009988-1",
-        philhealth: "12-887766554-2",
-        pagibig: "1212-3344-5511",
-        tin: "554-332-110-000",
-        photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=300"
       }
     ];
 
-    let currentEditId = null;
-    let newEmployeePhotoData = "https://placehold.co/160x160/134074/FFFFFF?text=Photo";
-
-    window.addEventListener('DOMContentLoaded', () => {
-      calculateMatrix();
+    // INITIALIZATION & EVENT LISTENERS
+    document.addEventListener("DOMContentLoaded", function () {
+      updateMatrix();
       renderEmployeeTable();
     });
 
-    // Helper Utility for Service Length Calculation
-    function calculateTenure(dateString) {
-      if (!dateString) return 'N/A';
-      const start = new Date(dateString);
-      const now = new Date();
-      if (isNaN(start.getTime())) return 'N/A';
-
-      let years = now.getFullYear() - start.getFullYear();
-      let months = now.getMonth() - start.getMonth();
-
-      if (months < 0) {
-        years--;
-        months += 12;
-      }
-
-      if (years === 0 && months === 0) return 'Less than 1 month';
-      
-      let res = [];
-      if (years > 0) res.push(`${years} yr${years > 1 ? 's' : ''}`);
-      if (months > 0) res.push(`${months} mo${months > 1 ? 's' : ''}`);
-      return res.join(', ');
-    }
-
-    function calculateAge(dobString) {
-      if (!dobString) return '---';
-      const dob = new Date(dobString);
-      const diff = Date.now() - dob.getTime();
-      const ageDate = new Date(diff);
-      return Math.abs(ageDate.getUTCFullYear() - 1970);
-    }
-
-    // Photo Preview Handlers for Add Entry Modal
-    function previewUploadedImage(event) {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          newEmployeePhotoData = e.target.result;
-          document.getElementById('addPhotoPreview').src = newEmployeePhotoData;
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-
-    function previewUrlImage(url) {
-      if (url && url.trim() !== '') {
-        newEmployeePhotoData = url;
-        document.getElementById('addPhotoPreview').src = url;
-      }
-    }
-
-    // ================= DYNAMIC MATRIX CALCULATION ENGINE =================
-    function calculateMatrix() {
-      const counts = {
-        ob: { p: 0, co: 0, ca: 0, jo: 0 },
-        det: { p: 0, co: 0, ca: 0, jo: 0 },
-        dfo: { p: 0, co: 0, ca: 0, jo: 0 }
-      };
-
-      employees.forEach(e => {
-        let st = 'jo';
-        const statusUpper = (e.employmentStatus || '').toUpperCase();
-        if (statusUpper.includes('PERMANENT') || statusUpper.includes('REGULAR')) st = 'p';
-        else if (statusUpper.includes('CO-TERMINUS') || statusUpper.includes('COTERMINUS')) st = 'co';
-        else if (statusUpper.includes('CASUAL') || statusUpper.includes('CONTRACTUAL')) st = 'ca';
-        else if (statusUpper.includes('JOB ORDER') || statusUpper.includes('JO')) st = 'jo';
-
-        let pl = 'ob';
-        const placementUpper = (e.placementType || '').toUpperCase();
-        if (placementUpper.includes('OTHER')) pl = 'dfo';
-        else if (placementUpper.includes('DETAILED')) pl = 'det';
-        else pl = 'ob';
-
-        counts[pl][st]++;
-      });
-
-      ['ob', 'det', 'dfo'].forEach(row => {
-        const rowTotal = counts[row].p + counts[row].co + counts[row].ca + counts[row].jo;
-        document.getElementById(`m-${row}-p`).textContent = counts[row].p;
-        document.getElementById(`m-${row}-co`).textContent = counts[row].co;
-        document.getElementById(`m-${row}-ca`).textContent = counts[row].ca;
-        document.getElementById(`m-${row}-jo`).textContent = counts[row].jo;
-        document.getElementById(`m-${row}-tot`).textContent = rowTotal;
-      });
-
-      const totalP = counts.ob.p + counts.det.p + counts.dfo.p;
-      const totalCO = counts.ob.co + counts.det.co + counts.dfo.co;
-      const totalCA = counts.ob.ca + counts.det.ca + counts.dfo.ca;
-      const totalJO = counts.ob.jo + counts.det.jo + counts.dfo.jo;
-      const grandTotal = totalP + totalCO + totalCA + totalJO;
-
-      document.getElementById('m-v-p').textContent = totalP;
-      document.getElementById('m-v-co').textContent = totalCO;
-      document.getElementById('m-v-ca').textContent = totalCA;
-      document.getElementById('m-v-jo').textContent = totalJO;
-      document.getElementById('m-overall-total').textContent = grandTotal;
-    }
-
-    // ================= ROSTER TABLE RENDERER =================
-    function renderEmployeeTable() {
-      const tbody = document.getElementById('employeeRosterBody');
-      const searchVal = document.getElementById('rosterSearch').value.toLowerCase();
-      const divFilter = document.getElementById('filterDivision').value;
-      const placeFilter = document.getElementById('filterPlacement').value;
-
-      tbody.innerHTML = '';
-
-      const filtered = employees.filter(e => {
-        const matchesSearch = e.lastName.toLowerCase().includes(searchVal) || 
-                              e.firstName.toLowerCase().includes(searchVal) || 
-                              e.id.toLowerCase().includes(searchVal) ||
-                              e.jobTitle.toLowerCase().includes(searchVal);
-        const matchesDiv = divFilter === 'ALL' || e.division === divFilter;
-        const matchesPlacement = placeFilter === 'ALL' || (e.placementType || 'Office-Based') === placeFilter;
-
-        return matchesSearch && matchesDiv && matchesPlacement;
-      });
-
-      if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="py-4 text-center text-slate-400">No personnel records found matching filters.</td></tr>`;
-        return;
-      }
-
-      filtered.forEach(emp => {
-        const tr = document.createElement('tr');
-        tr.className = 'hover:bg-slate-50 dark:hover:bg-slate-700/50 transition';
-
-        let statusBadgeClass = 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300';
-        if (emp.employmentStatus.includes('Casual')) statusBadgeClass = 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300';
-        if (emp.employmentStatus.includes('Job Order')) statusBadgeClass = 'bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-300';
-        if (emp.employmentStatus.includes('Co-Terminus')) statusBadgeClass = 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300';
-
-        tr.innerHTML = `
-          <td class="py-3 px-4 flex items-center space-x-3">
-            <img src="${emp.photo}" class="w-8 h-8 rounded-full object-cover border border-pgso-gold" />
-            <div>
-              <p class="font-extrabold text-slate-900 dark:text-white uppercase">${emp.lastName}, ${emp.firstName} ${emp.nameExtension || ''}</p>
-              <p class="text-[10px] font-mono text-slate-400">${emp.id}</p>
-            </div>
-          </td>
-          <td class="py-3 px-3">
-            <p class="font-bold text-slate-800 dark:text-slate-200">${emp.jobTitle}</p>
-            <p class="text-[10px] text-slate-400">${emp.division}</p>
-          </td>
-          <td class="py-3 px-3 text-center">
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${statusBadgeClass}">
-              ${emp.employmentStatus}
-            </span>
-          </td>
-          <td class="py-3 px-3 text-center font-semibold text-slate-700 dark:text-slate-300">
-            ${emp.placementType || 'Office-Based'}
-          </td>
-          <td class="py-3 px-3 text-center font-bold text-emerald-600 dark:text-emerald-400">
-            ${emp.basicSalary}
-          </td>
-          <td class="py-3 px-4 text-center space-x-1">
-            <button onclick="viewEmployee('${emp.id}')" class="bg-pgso-navy hover:bg-slate-700 text-white px-2 py-1 rounded text-[11px] font-semibold transition" title="View Official Data Sheet">
-              <i class="fa-solid fa-eye"></i> View
-            </button>
-            <button onclick="openEditModal('${emp.id}')" class="bg-amber-500 hover:bg-amber-600 text-white px-2 py-1 rounded text-[11px] font-semibold transition" title="Edit Employee">
-              <i class="fa-solid fa-pen-to-square"></i> Edit
-            </button>
-            <button onclick="deleteEmployee('${emp.id}')" class="bg-rose-600 hover:bg-rose-700 text-white px-2 py-1 rounded text-[11px] font-semibold transition" title="Delete Entry">
-              <i class="fa-solid fa-trash"></i>
-            </button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    // ================= VIEW PLATFORM ACTIONS =================
-    function viewEmployee(id) {
-      const emp = employees.find(e => e.id === id);
-      if (!emp) return;
-
-      document.getElementById('empPhoto').src = emp.photo;
-      document.getElementById('empIdBadge').textContent = emp.id;
-      document.getElementById('empLastName').textContent = emp.lastName;
-      document.getElementById('empFirstName').textContent = emp.firstName;
-      document.getElementById('empMiddleName').textContent = emp.middleName || 'N/A';
-      document.getElementById('empNameExtension').textContent = emp.nameExtension || 'N/A';
-      document.getElementById('empContact').querySelector('span').textContent = emp.contact || 'N/A';
-      document.getElementById('empEmail').querySelector('span').textContent = emp.email || 'N/A';
-      document.getElementById('empAddress').querySelector('span').textContent = emp.address || 'N/A';
-
-      document.getElementById('empGender').textContent = emp.gender || 'N/A';
-      document.getElementById('empMaritalStatus').textContent = emp.maritalStatus || 'N/A';
-      document.getElementById('empDob').textContent = emp.dob || 'N/A';
-      document.getElementById('empAge').textContent = emp.dob ? `${calculateAge(emp.dob)} yrs old` : '---';
-      document.getElementById('empPob').textContent = emp.pob || 'N/A';
-      document.getElementById('empNationality').textContent = emp.nationality || 'Filipino';
-      document.getElementById('empReligion').textContent = emp.religion || 'N/A';
-
-      document.getElementById('emgName').textContent = emp.emergency?.name || 'N/A';
-      document.getElementById('emgRel').textContent = emp.emergency?.relationship || 'N/A';
-      document.getElementById('emgContact').textContent = emp.emergency?.contact || 'N/A';
-      document.getElementById('emgAddress').textContent = emp.emergency?.address || 'N/A';
-
-      document.getElementById('empJobTitle').textContent = emp.jobTitle;
-      document.getElementById('empEmploymentStatus').textContent = emp.employmentStatus;
-      document.getElementById('empPlacementType').textContent = emp.placementType || 'Office-Based';
-      document.getElementById('empDateHired').textContent = emp.dateHired || 'N/A';
-      document.getElementById('empTenure').textContent = calculateTenure(emp.dateHired);
-      document.getElementById('empDivision').textContent = emp.division;
-      document.getElementById('empJobLevel').textContent = emp.jobLevel || 'N/A';
-      document.getElementById('empSuperior').textContent = emp.superior || 'PGSO Head';
-
-      document.getElementById('empSalaryType').textContent = emp.salaryType || 'Monthly Regular';
-      document.getElementById('empBasicSalary').textContent = emp.basicSalary || 'N/A';
-      document.getElementById('empBankName').textContent = emp.bankName || 'N/A';
-      document.getElementById('empBankAccount').textContent = emp.accountNo || 'N/A';
-
-      document.getElementById('empSss').textContent = emp.sss || 'N/A';
-      document.getElementById('empPhilhealth').textContent = emp.philhealth || 'N/A';
-      document.getElementById('empPagibig').textContent = emp.pagibig || 'N/A';
-      document.getElementById('empTin').textContent = emp.tin || 'N/A';
-
-      document.getElementById('docStamp').textContent = `2026-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
-
-      const viewSec = document.getElementById('viewSection');
-      viewSec.classList.remove('hidden');
-      viewSec.scrollIntoView({ behavior: 'smooth' });
-    }
-
-    function closeEmployeeView() {
-      document.getElementById('viewSection').classList.add('hidden');
-    }
-
-    // ================= EDIT ACTIONS =================
-    function openEditModal(id) {
-      const emp = employees.find(e => e.id === id);
-      if (!emp) return;
-      currentEditId = id;
-
-      document.getElementById('editLastName').value = emp.lastName;
-      document.getElementById('editFirstName').value = emp.firstName;
-      document.getElementById('editMiddleName').value = emp.middleName || '';
-      document.getElementById('editEmploymentStatus').value = emp.employmentStatus;
-      document.getElementById('editPlacementType').value = emp.placementType || 'Office-Based';
-      document.getElementById('editDivision').value = emp.division;
-      document.getElementById('editJobTitle').value = emp.jobTitle;
-      document.getElementById('editBasicSalary').value = emp.basicSalary;
-
-      document.getElementById('editModal').classList.remove('hidden');
-    }
-
-    function closeEditModal() {
-      document.getElementById('editModal').classList.add('hidden');
-      currentEditId = null;
-    }
-
-    function saveEmployeeEdits() {
-      const emp = employees.find(e => e.id === currentEditId);
-      if (!emp) return;
-
-      emp.lastName = document.getElementById('editLastName').value.toUpperCase();
-      emp.firstName = document.getElementById('editFirstName').value.toUpperCase();
-      emp.middleName = document.getElementById('editMiddleName').value.toUpperCase();
-      emp.employmentStatus = document.getElementById('editEmploymentStatus').value;
-      emp.placementType = document.getElementById('editPlacementType').value;
-      emp.division = document.getElementById('editDivision').value;
-      emp.jobTitle = document.getElementById('editJobTitle').value;
-      emp.basicSalary = document.getElementById('editBasicSalary').value;
-
-      calculateMatrix();
-      renderEmployeeTable();
-      closeEditModal();
-
-      if (!document.getElementById('viewSection').classList.contains('hidden') && document.getElementById('empIdBadge').textContent === emp.id) {
-        viewEmployee(emp.id);
-      }
-    }
-
-    // ================= ADD NEW ENTRY ACTIONS (COMPREHENSIVE MULTI-SECTION) =================
-    function openAddEmployeeModal() {
-      newEmployeePhotoData = "https://placehold.co/160x160/134074/FFFFFF?text=Photo";
-      document.getElementById('addPhotoPreview').src = newEmployeePhotoData;
-      document.getElementById('addModal').classList.remove('hidden');
-    }
-
-    function closeAddEmployeeModal() {
-      document.getElementById('addModal').classList.add('hidden');
-      document.getElementById('addEmployeeForm').reset();
-    }
-
-    function submitNewEmployee() {
-      const newId = `PGSO-2026-${Math.floor(100 + Math.random() * 900)}`;
-      const newEmp = {
-        id: newId,
-        // 1. Personal Information
-        lastName: document.getElementById('addLastName').value.toUpperCase(),
-        firstName: document.getElementById('addFirstName').value.toUpperCase(),
-        middleName: document.getElementById('addMiddleName').value.toUpperCase(),
-        nameExtension: document.getElementById('addNameExtension').value,
-        contact: document.getElementById('addContact').value || "N/A",
-        email: document.getElementById('addEmail').value || "N/A",
-        address: document.getElementById('addAddress').value || "Northern Samar",
-        gender: document.getElementById('addGender').value,
-        maritalStatus: document.getElementById('addMaritalStatus').value,
-        dob: document.getElementById('addDob').value || "N/A",
-        age: document.getElementById('addDob').value ? calculateAge(document.getElementById('addDob').value) : '---',
-        pob: "Northern Samar",
-        nationality: "Filipino",
-        religion: "Roman Catholic",
-        emergency: { 
-          name: document.getElementById('addEmgName').value || "N/A", 
-          contact: document.getElementById('addEmgContact').value || "N/A", 
-          address: document.getElementById('addEmgAddress').value || "N/A", 
-          relationship: document.getElementById('addEmgRel').value || "N/A" 
-        },
-
-        // 2. Employment & Position Details
-        status: "Active",
-        employmentStatus: document.getElementById('addEmploymentStatus').value,
-        placementType: document.getElementById('addPlacementType').value,
-        division: document.getElementById('addDivision').value,
-        jobTitle: document.getElementById('addJobTitle').value,
-        jobLevel: document.getElementById('addJobLevel').value || "SG-01",
-        dateHired: document.getElementById('addDateHired').value || new Date().toISOString().split('T')[0],
-        department: "Provincial General Services Office (PGSO)",
-        superior: document.getElementById('addSuperior').value || "Engr. Roberto M. Daza (PGSO Head)",
-        workLocation: document.getElementById('addWorkLocation').value || "Provincial Capitol Compound, Catarman",
-
-        // 3. Compensation & Payroll Accounts
-        salaryType: document.getElementById('addSalaryType').value,
-        basicSalary: document.getElementById('addBasicSalary').value || "₱ 0.00",
-        bankName: document.getElementById('addBankName').value || "Land Bank of the Philippines (LBP)",
-        accountNo: document.getElementById('addAccountNo').value || "N/A",
-
-        // 4. Government Statutory Benefits & IDs
-        sss: document.getElementById('addSss').value || "N/A",
-        philhealth: document.getElementById('addPhilhealth').value || "N/A",
-        pagibig: document.getElementById('addPagibig').value || "N/A",
-        tin: document.getElementById('addTin').value || "N/A",
-
-        // Image Photo Reference
-        photo: newEmployeePhotoData
-      };
-
-      employees.push(newEmp);
-      calculateMatrix();
-      renderEmployeeTable();
-      closeAddEmployeeModal();
-
-      // Automatically open the view platform for the newly created employee
-      viewEmployee(newId);
-    }
-
-    function deleteEmployee(id) {
-      if (confirm(`Are you sure you want to remove employee entry ${id}?`)) {
-        employees = employees.filter(e => e.id !== id);
-        calculateMatrix();
-        renderEmployeeTable();
-        if (document.getElementById('empIdBadge').textContent === id) {
-          closeEmployeeView();
-        }
-      }
-    }
-
+    // THEME TOGGLE
     function toggleTheme() {
       const html = document.documentElement;
       const themeIcon = document.getElementById('themeIcon');
@@ -1450,8 +1011,337 @@
         themeIcon.className = 'fa-solid fa-moon text-base';
       } else {
         html.classList.add('dark');
-        themeIcon.className = 'fa-solid fa-sun text-base text-pgso-gold';
+        themeIcon.className = 'fa-solid fa-sun text-base';
       }
+    }
+
+    // MATRIX COMPUTATION ENGINE
+    function updateMatrix() {
+      const counts = {
+        'Office-Based': { 'Permanent / Regular': 0, 'Co-Terminus': 0, 'Casual / Contractual': 0, 'Job Order': 0 },
+        'Detailed': { 'Permanent / Regular': 0, 'Co-Terminus': 0, 'Casual / Contractual': 0, 'Job Order': 0 },
+        'Detailed from Other Office': { 'Permanent / Regular': 0, 'Co-Terminus': 0, 'Casual / Contractual': 0, 'Job Order': 0 }
+      };
+
+      employees.forEach(emp => {
+        const place = emp.placementType;
+        const status = emp.employmentStatus;
+        if (counts[place] && counts[place][status] !== undefined) {
+          counts[place][status]++;
+        }
+      });
+
+      // Populate Office-Based
+      document.getElementById('m-ob-p').innerText = counts['Office-Based']['Permanent / Regular'];
+      document.getElementById('m-ob-co').innerText = counts['Office-Based']['Co-Terminus'];
+      document.getElementById('m-ob-ca').innerText = counts['Office-Based']['Casual / Contractual'];
+      document.getElementById('m-ob-jo').innerText = counts['Office-Based']['Job Order'];
+      const obTot = counts['Office-Based']['Permanent / Regular'] + counts['Office-Based']['Co-Terminus'] + counts['Office-Based']['Casual / Contractual'] + counts['Office-Based']['Job Order'];
+      document.getElementById('m-ob-tot').innerText = obTot;
+
+      // Populate Detailed (Outgoing)
+      document.getElementById('m-det-p').innerText = counts['Detailed']['Permanent / Regular'];
+      document.getElementById('m-det-co').innerText = counts['Detailed']['Co-Terminus'];
+      document.getElementById('m-det-ca').innerText = counts['Detailed']['Casual / Contractual'];
+      document.getElementById('m-det-jo').innerText = counts['Detailed']['Job Order'];
+      const detTot = counts['Detailed']['Permanent / Regular'] + counts['Detailed']['Co-Terminus'] + counts['Detailed']['Casual / Contractual'] + counts['Detailed']['Job Order'];
+      document.getElementById('m-det-tot').innerText = detTot;
+
+      // Populate Detailed Incoming
+      document.getElementById('m-dfo-p').innerText = counts['Detailed from Other Office']['Permanent / Regular'];
+      document.getElementById('m-dfo-co').innerText = counts['Detailed from Other Office']['Co-Terminus'];
+      document.getElementById('m-dfo-ca').innerText = counts['Detailed from Other Office']['Casual / Contractual'];
+      document.getElementById('m-dfo-jo').innerText = counts['Detailed from Other Office']['Job Order'];
+      const dfoTot = counts['Detailed from Other Office']['Permanent / Regular'] + counts['Detailed from Other Office']['Co-Terminus'] + counts['Detailed from Other Office']['Casual / Contractual'] + counts['Detailed from Other Office']['Job Order'];
+      document.getElementById('m-dfo-tot').innerText = dfoTot;
+
+      // Vertical Totals
+      const vP = counts['Office-Based']['Permanent / Regular'] + counts['Detailed']['Permanent / Regular'] + counts['Detailed from Other Office']['Permanent / Regular'];
+      const vCo = counts['Office-Based']['Co-Terminus'] + counts['Detailed']['Co-Terminus'] + counts['Detailed from Other Office']['Co-Terminus'];
+      const vCa = counts['Office-Based']['Casual / Contractual'] + counts['Detailed']['Casual / Contractual'] + counts['Detailed from Other Office']['Casual / Contractual'];
+      const vJo = counts['Office-Based']['Job Order'] + counts['Detailed']['Job Order'] + counts['Detailed from Other Office']['Job Order'];
+
+      document.getElementById('m-v-p').innerText = vP;
+      document.getElementById('m-v-co').innerText = vCo;
+      document.getElementById('m-v-ca').innerText = vCa;
+      document.getElementById('m-v-jo').innerText = vJo;
+      document.getElementById('m-overall-total').innerText = vP + vCo + vCa + vJo;
+    }
+
+    // ROSTER RENDERER
+    function renderEmployeeTable() {
+      const tbody = document.getElementById('employeeRosterBody');
+      tbody.innerHTML = '';
+
+      const divFilter = document.getElementById('filterDivision').value;
+      const placeFilter = document.getElementById('filterPlacement').value;
+      const searchVal = document.getElementById('rosterSearch').value.toLowerCase().trim();
+
+      const filtered = employees.filter(emp => {
+        const matchesDiv = divFilter === 'ALL' || emp.division === divFilter;
+        const matchesPlace = placeFilter === 'ALL' || emp.placementType === placeFilter;
+        const fullName = `${emp.firstName} ${emp.middleName} ${emp.lastName}`.toLowerCase();
+        const matchesSearch = !searchVal || fullName.includes(searchVal) || emp.id.toLowerCase().includes(searchVal) || emp.jobTitle.toLowerCase().includes(searchVal);
+        return matchesDiv && matchesPlace && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="text-center py-6 text-slate-400">No personnel records found matching filters.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      filtered.forEach(emp => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-50 dark:hover:bg-slate-700/50 transition';
+
+        let statusBadge = '';
+        if (emp.employmentStatus.includes('Permanent')) {
+          statusBadge = `<span class="px-2 py-0.5 text-[10px] rounded-full font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300">Permanent (P)</span>`;
+        } else if (emp.employmentStatus.includes('Co-Terminus')) {
+          statusBadge = `<span class="px-2 py-0.5 text-[10px] rounded-full font-bold bg-blue-100 text-blue-800 dark:bg-blue-900/60 dark:text-blue-300">Co-Terminus (CO)</span>`;
+        } else if (emp.employmentStatus.includes('Casual')) {
+          statusBadge = `<span class="px-2 py-0.5 text-[10px] rounded-full font-bold bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-300">Casual (CA)</span>`;
+        } else {
+          statusBadge = `<span class="px-2 py-0.5 text-[10px] rounded-full font-bold bg-purple-100 text-purple-800 dark:bg-purple-900/60 dark:text-purple-300">Job Order (JO)</span>`;
+        }
+
+        tr.innerHTML = `
+          <td class="py-3 px-4 flex items-center space-x-3">
+            <img src="${emp.photo}" alt="Headshot" class="w-8 h-8 rounded-full object-cover border border-pgso-gold shrink-0" onerror="this.src='https://placehold.co/80x80/134074/FFFFFF?text=Photo'" />
+            <div>
+              <p class="font-bold text-slate-900 dark:text-white uppercase">${emp.lastName}, ${emp.firstName}</p>
+              <p class="text-[10px] text-slate-500 font-mono">${emp.id}</p>
+            </div>
+          </td>
+          <td class="py-3 px-3">
+            <p class="font-bold text-slate-800 dark:text-slate-200">${emp.jobTitle}</p>
+            <p class="text-[10px] text-slate-500 dark:text-slate-400">${emp.division}</p>
+          </td>
+          <td class="py-3 px-3 text-center">${statusBadge}</td>
+          <td class="py-3 px-3 text-center font-semibold text-slate-700 dark:text-slate-300">${emp.placementType}</td>
+          <td class="py-3 px-3 text-center font-bold text-emerald-600 dark:text-emerald-400">${emp.basicSalary}</td>
+          <td class="py-3 px-4 text-center">
+            <div class="flex items-center justify-center space-x-1.5">
+              <button onclick="viewEmployee('${emp.id}')" class="p-1.5 bg-pgso-navy text-white rounded hover:bg-slate-700 transition" title="View Full Sheet">
+                <i class="fa-solid fa-eye text-xs"></i>
+              </button>
+              <button onclick="openEditModal('${emp.id}')" class="p-1.5 bg-amber-600 text-white rounded hover:bg-amber-700 transition" title="Quick Edit">
+                <i class="fa-solid fa-pen text-xs"></i>
+              </button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // VIEW INDIVIDUAL EMPLOYEE SHEET
+    function viewEmployee(id) {
+      const emp = employees.find(e => e.id === id);
+      if (!emp) return;
+
+      document.getElementById('empIdBadge').innerText = emp.id;
+      document.getElementById('empPhoto').src = emp.photo;
+      document.getElementById('empLastName').innerText = emp.lastName;
+      document.getElementById('empFirstName').innerText = emp.firstName;
+      document.getElementById('empMiddleName').innerText = emp.middleName || '---';
+      document.getElementById('empNameExtension').innerText = emp.nameExtension || 'N/A';
+      document.getElementById('empContact').querySelector('span').innerText = emp.contact;
+      document.getElementById('empEmail').querySelector('span').innerText = emp.email;
+      document.getElementById('empAddress').querySelector('span').innerText = emp.address;
+
+      document.getElementById('empGender').innerText = emp.gender;
+      document.getElementById('empMaritalStatus').innerText = emp.maritalStatus;
+      document.getElementById('empDob').innerText = emp.dob;
+      document.getElementById('empAge').innerText = emp.age;
+      document.getElementById('empNationality').innerText = emp.nationality;
+      document.getElementById('empReligion').innerText = emp.religion;
+      document.getElementById('empPob').innerText = emp.pob;
+
+      document.getElementById('emgName').innerText = emp.emergency.name || '---';
+      document.getElementById('emgRel').innerText = emp.emergency.relationship || '---';
+      document.getElementById('emgContact').innerText = emp.emergency.contact || '---';
+      document.getElementById('emgAddress').innerText = emp.emergency.address || '---';
+
+      document.getElementById('empJobTitle').innerText = emp.jobTitle;
+      document.getElementById('empEmploymentStatus').innerText = emp.employmentStatus;
+      document.getElementById('empPlacementType').innerText = emp.placementType;
+      document.getElementById('empDateHired').innerText = emp.dateHired;
+      document.getElementById('empDivision').innerText = emp.division;
+      document.getElementById('empDepartment').innerText = emp.department;
+      document.getElementById('empJobLevel').innerText = emp.jobLevel;
+      document.getElementById('empSuperior').innerText = emp.superior;
+      document.getElementById('empWorkLocation').innerText = emp.workLocation;
+
+      // Service Length Calculation
+      if (emp.dateHired) {
+        const start = new Date(emp.dateHired);
+        const now = new Date();
+        const diffYears = ((now - start) / (1000 * 60 * 60 * 24 * 365.25)).toFixed(1);
+        document.getElementById('empTenure').innerText = `${diffYears} Years`;
+      } else {
+        document.getElementById('empTenure').innerText = '---';
+      }
+
+      document.getElementById('empSalaryType').innerText = emp.salaryType;
+      document.getElementById('empBasicSalary').innerText = emp.basicSalary;
+      document.getElementById('empBankName').innerText = emp.bankName;
+      document.getElementById('empBankAccount').innerText = emp.accountNo;
+
+      document.getElementById('empSss').innerText = emp.sss;
+      document.getElementById('empPhilhealth').innerText = emp.philhealth;
+      document.getElementById('empPagibig').innerText = emp.pagibig;
+      document.getElementById('empTin').innerText = emp.tin;
+
+      document.getElementById('viewSection').classList.remove('hidden');
+      document.getElementById('viewSection').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function closeEmployeeView() {
+      document.getElementById('viewSection').classList.add('hidden');
+    }
+
+    // QUICK EDIT MODAL LOGIC
+    function openEditModal(id) {
+      const emp = employees.find(e => e.id === id);
+      if (!emp) return;
+
+      document.getElementById('editEmpId').value = emp.id;
+      document.getElementById('editLastName').value = emp.lastName;
+      document.getElementById('editFirstName').value = emp.firstName;
+      document.getElementById('editMiddleName').value = emp.middleName;
+      document.getElementById('editDivision').value = emp.division;
+      document.getElementById('editJobTitle').value = emp.jobTitle;
+      document.getElementById('editBasicSalary').value = emp.basicSalary;
+      document.getElementById('editEmploymentStatus').value = emp.employmentStatus;
+      document.getElementById('editPlacementType').value = emp.placementType;
+
+      document.getElementById('editModal').classList.remove('hidden');
+    }
+
+    function closeEditModal() {
+      document.getElementById('editModal').classList.add('hidden');
+    }
+
+    function saveEmployeeEdits() {
+      const id = document.getElementById('editEmpId').value;
+      const emp = employees.find(e => e.id === id);
+      if (!emp) return;
+
+      emp.lastName = document.getElementById('editLastName').value.toUpperCase();
+      emp.firstName = document.getElementById('editFirstName').value.toUpperCase();
+      emp.middleName = document.getElementById('editMiddleName').value.toUpperCase();
+      emp.division = document.getElementById('editDivision').value;
+      emp.jobTitle = document.getElementById('editJobTitle').value;
+      emp.basicSalary = document.getElementById('editBasicSalary').value;
+      emp.employmentStatus = document.getElementById('editEmploymentStatus').value;
+      emp.placementType = document.getElementById('editPlacementType').value;
+
+      closeEditModal();
+      updateMatrix();
+      renderEmployeeTable();
+    }
+
+    // ADD NEW EMPLOYEE ENTRY LOGIC
+    function openAddEmployeeModal() {
+      document.getElementById('addEmployeeForm').reset();
+      document.getElementById('addPhotoPreview').src = "https://placehold.co/160x160/134074/FFFFFF?text=Photo";
+      document.getElementById('addModal').classList.remove('hidden');
+    }
+
+    function closeAddEmployeeModal() {
+      document.getElementById('addModal').classList.add('hidden');
+    }
+
+    function previewUploadedImage(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (evt) {
+          document.getElementById('addPhotoPreview').src = evt.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function previewUrlImage(url) {
+      if (url.trim()) {
+        document.getElementById('addPhotoPreview').src = url;
+      }
+    }
+
+    function submitNewEmployee() {
+      const newId = `PGSO-2026-${String(employees.length + 1).padStart(3, '0')}`;
+      const lastName = document.getElementById('addLastName').value.toUpperCase();
+      const firstName = document.getElementById('addFirstName').value.toUpperCase();
+      const middleName = document.getElementById('addMiddleName').value.toUpperCase();
+      const nameExtension = document.getElementById('addNameExtension').value;
+
+      const dobVal = document.getElementById('addDob').value;
+      let ageVal = '---';
+      if (dobVal) {
+        const dobDate = new Date(dobVal);
+        const diffMs = Date.now() - dobDate.getTime();
+        const ageDate = new Date(diffMs);
+        ageVal = Math.abs(ageDate.getUTCFullYear() - 1970);
+      }
+
+      const photoSrc = document.getElementById('addPhotoPreview').src;
+
+      const newEmp = {
+        id: newId,
+        lastName: lastName,
+        firstName: firstName,
+        middleName: middleName,
+        nameExtension: nameExtension,
+        contact: document.getElementById('addContact').value || '---',
+        email: document.getElementById('addEmail').value || '---',
+        address: document.getElementById('addAddress').value || 'Catarman, Northern Samar',
+        gender: document.getElementById('addGender').value,
+        maritalStatus: document.getElementById('addMaritalStatus').value,
+        dob: dobVal || '---',
+        age: ageVal,
+        pob: 'Northern Samar',
+        nationality: 'Filipino',
+        religion: 'Roman Catholic',
+        emergency: {
+          name: document.getElementById('addEmgName').value || '---',
+          relationship: document.getElementById('addEmgRel').value || '---',
+          contact: document.getElementById('addEmgContact').value || '---',
+          address: document.getElementById('addEmgAddress').value || '---'
+        },
+        jobTitle: document.getElementById('addJobTitle').value,
+        status: 'Active',
+        employmentStatus: document.getElementById('addEmploymentStatus').value,
+        placementType: document.getElementById('addPlacementType').value,
+        dateHired: document.getElementById('addDateHired').value || new Date().toISOString().split('T')[0],
+        division: document.getElementById('addDivision').value,
+        department: 'Provincial General Services Office (PGSO)',
+        jobLevel: document.getElementById('addJobLevel').value || 'SG-1',
+        superior: document.getElementById('addSuperior').value || 'PGSO Division Head',
+        regularization: 'N/A',
+        separation: 'N/A',
+        workLocation: document.getElementById('addWorkLocation').value || 'Provincial Capitol Compound, Catarman',
+        salaryType: document.getElementById('addSalaryType').value,
+        basicSalary: document.getElementById('addBasicSalary').value || '₱ 0.00',
+        taxStatus: 'Taxable',
+        bankName: document.getElementById('addBankName').value || 'Land Bank of the Philippines (LBP)',
+        accountNo: document.getElementById('addAccountNo').value || '---',
+        sss: document.getElementById('addSss').value || '---',
+        philhealth: document.getElementById('addPhilhealth').value || '---',
+        pagibig: document.getElementById('addPagibig').value || '---',
+        tin: document.getElementById('addTin').value || '---',
+        photo: photoSrc
+      };
+
+      employees.unshift(newEmp);
+      closeAddEmployeeModal();
+      updateMatrix();
+      renderEmployeeTable();
     }
   </script>
 </body>
